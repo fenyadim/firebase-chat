@@ -1,0 +1,12 @@
+.loginWrapper {
+  padding: 20px;
+  height: 500px;
+  width: 500px;
+  border: 1px black solid;
+  border-radius: 15px;
+
+  .form {
+    display: flex;
+    flex-direction: column;
+  }
+}

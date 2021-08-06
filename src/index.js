@@ -1,17 +1,28 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import { Provider } from "react-redux";
+import firebase from "firebase";
+
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { store } from "./redux/store";
+
+import './index.css';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBg3MjTG_LFkxmx7086bjzeCM_h9krSU_k",
+  authDomain: "fir-nchat.firebaseapp.com",
+  projectId: "fir-nchat",
+  storageBucket: "fir-nchat.appspot.com",
+  messagingSenderId: "897032280665",
+  appId: "1:897032280665:web:296b070957db93bb66ef48",
+  measurementId: "G-N4DJJS4R33"
+}
+
+firebase.initializeApp(firebaseConfig)
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Provider store={store}>
+    <App/>
+  </Provider>,
   document.getElementById('root')
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
