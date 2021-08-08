@@ -1,52 +1,39 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import firebase from "firebase";
+import { createAction, createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   status: null,
-  errorDescription: null
+  errorDetail: null,
+  data: {}
 }
 
-export const addTest = createAsyncThunk('users/addUsers', async (data) => {
-  const {email, password} = data
-  const response = firebase.auth().createUserWithEmailAndPassword(email, password)
-  try {
-    return response.then()
-  } catch (e) {
-    console.log(e)
-    return response.catch((error) => {
-      return error.message
-    })
-  }
-})
+export const sagaCreateUser = createAction('saga/sagaCreateUsers')
+export const sagaSignInUser = createAction('saga/sagaSignInUser')
 
 const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
-    // addUser: (state, action) => {
-    //   console.log(state.status)
-    //   const {email, password} = action.payload
-    //   firebase.auth().createUserWithEmailAndPassword(email, password).catch((error) => {
-    //     const errorMessage = error.message;
-    //     state.status = 'error';
-    //     state.errorDescription = errorMessage;
-    //   })
-    // }
-  },
-  extraReducers: {
-    [addTest.pending]: (state, action) => {
-      state.status = 'loading'
+    createUser: (state, action) => {
+      state.status = 'success'
+      state.errorDetail = null
     },
-    [addTest.fulfilled]: (state, action) => {
-      state.status = 'success';
+    errorCreateUser: (state, action) => {
+      state.status = 'error'
+      state.errorDetail = action.payload
     },
-    [addTest.rejected]: (state, action) => {
-      state.status = 'error';
-      state.errorDescription = action.payload;
+    signIn: (state, {payload}) => {
+      if (payload.status === 'error') {
+        state.status = 'error'
+        state.errorDetail = payload.errorDetail
+      } else {
+        state.status = 'success'
+        state.errorDetail = null
+        state.data = payload
+      }
     }
-  }
+  },
 })
 
-export const {addUser} = usersSlice.actions
+export const {createUser, errorCreateUser, signIn} = usersSlice.actions
 
 export default usersSlice.reducer

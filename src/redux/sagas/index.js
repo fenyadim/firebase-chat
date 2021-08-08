@@ -1,8 +1,9 @@
 import { all } from 'redux-saga/effects'
-import { helloSaga } from "./helloSaga";
+import { apiWatcher, signInWatcher } from "./apiSaga";
 
 export default function* rootSaga() {
   yield all([
-    helloSaga(),
+    apiWatcher(),
+    signInWatcher()
   ])
 }

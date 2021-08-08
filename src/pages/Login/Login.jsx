@@ -1,9 +1,11 @@
 import React from "react";
+import firebase from "firebase";
+import { useFormik } from "formik";
+import { useDispatch, useSelector } from "react-redux";
 
 import styles from './Login.module.scss'
-import { useFormik } from "formik";
-import { useDispatch } from "react-redux";
-import { addTest, addUser } from "../../redux/slices/dataSlice";
+
+import { sagaCreateUser, sagaSignInUser } from "../../redux/slices/dataSlice";
 
 const validate = values => {
   const errors = {};
@@ -19,7 +21,20 @@ const validate = values => {
 };
 
 const Login = () => {
+  const data = useSelector((state) => state.users)
   const dispatch = useDispatch()
+  React.useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        const uid = user.uid
+        console.log(uid)
+        console.log(user)
+      } else {
+        console.log('Не зашёл')
+      }
+    });
+    console.log(data)
+  }, [data])
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -27,7 +42,7 @@ const Login = () => {
     },
     validate,
     onSubmit: values => {
-      dispatch(addTest({email: values.email, password: values.password}))
+      dispatch(sagaSignInUser({email: values.email, password: values.password}))
     }
   })
 
@@ -45,6 +60,7 @@ const Login = () => {
         {formik.errors.password && formik.touched.password ? <span>{formik.errors.password}</span> : ''}
         <button type="submit">Войти</button>
       </form>
+      <button onClick={() => firebase.auth().signOut()}>Выход</button>
     </div>
   )
 }
