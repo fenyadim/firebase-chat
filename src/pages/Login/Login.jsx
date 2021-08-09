@@ -1,11 +1,10 @@
 import React from "react";
-import firebase from "firebase";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
+import { sagaLoggedUser, sagaSignInUser, sagaSignOutUser } from "../../redux/action/saga";
 
 import styles from './Login.module.scss'
-
-import { sagaCreateUser, sagaSignInUser } from "../../redux/slices/dataSlice";
+import { Link } from "react-router-dom";
 
 const validate = values => {
   const errors = {};
@@ -21,20 +20,14 @@ const validate = values => {
 };
 
 const Login = () => {
-  const data = useSelector((state) => state.users)
+  const state = useSelector((state) => state.users)
+  const {status, response} = state
   const dispatch = useDispatch()
+
   React.useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        const uid = user.uid
-        console.log(uid)
-        console.log(user)
-      } else {
-        console.log('Не зашёл')
-      }
-    });
-    console.log(data)
-  }, [data])
+    dispatch(sagaLoggedUser())
+  }, [dispatch])
+
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -48,7 +41,7 @@ const Login = () => {
 
   return (
     <div className={styles.loginWrapper}>
-      <h1 className={styles.red}>Авторизация</h1>
+      <h1>Авторизация</h1>
       <form className={styles.form} onSubmit={formik.handleSubmit}>
         <label htmlFor="email">Email</label>
         <input type="email" name="email" id="email" value={formik.values.email}
@@ -60,7 +53,8 @@ const Login = () => {
         {formik.errors.password && formik.touched.password ? <span>{formik.errors.password}</span> : ''}
         <button type="submit">Войти</button>
       </form>
-      <button onClick={() => firebase.auth().signOut()}>Выход</button>
+      <button onClick={() => dispatch(sagaSignOutUser())}>Выход</button>
+      <Link to='/chat'>CHAT</Link>
     </div>
   )
 }

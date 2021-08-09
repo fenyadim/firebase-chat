@@ -1,52 +1,83 @@
 import firebase from 'firebase'
-import { call, put, takeEvery } from 'redux-saga/effects'
+import { call, put, takeLatest } from 'redux-saga/effects'
 
-import { createUser, errorCreateUser, sagaCreateUser, sagaSignInUser, signIn } from "../slices/dataSlice";
+import {
+  AUTHENTICATION_FAILED,
+  FETCH_AUTHORIZED_USER_SUCCESS,
+  SIGN_IN_SUCCESS,
+  SIGN_OUT_SUCCESS,
+  SIGN_UP_SUCCESS
+} from "../slices/dataSlice";
+import { sagaCreateUser, sagaLoggedUser, sagaSignInUser, sagaSignOutUser } from "../action/saga";
 
-const registrationUser = async (data) => {
-  const {email, password} = data
-  return await firebase.auth().createUserWithEmailAndPassword(email, password).then(() => {
-    return true
-  }).catch((error) => {
-    return error.message;
+
+const onAuthStateChanged = () => {
+  return new Promise((resolve, reject) => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        const {uid, email} = user
+        resolve({uid, email})
+      } else {
+        reject({message: 'Нет авторизированного пользователя!'})
+      }
+    })
   })
 }
 
-const signInUser = async (data) => {
-  const {email, password} = data
-  return await firebase.auth().signInWithEmailAndPassword(email, password).then((userCredential) => {
-    const user = userCredential.user
-    return {
-      uid: user.uid,
-      email: user.email,
-      phoneNumber: user.phoneNumber
-    }
-  }).catch((error) => {
-    return {
-      status: 'error',
-      errorDetail: error.message
-    };
-  })
-}
-
-export function* apiWorker(action) {
-  const response = yield call(registrationUser, action.payload)
-  if (response === true) {
-    yield put(createUser())
-  } else {
-    yield put(errorCreateUser(response))
+export function* signUpWorker(action) {
+  const {email, password} = action.payload
+  try {
+    const auth = firebase.auth()
+    const {user} = yield call([auth, auth.createUserWithEmailAndPassword], email, password)
+    yield put(SIGN_UP_SUCCESS(user))
+  } catch (e) {
+    yield put(AUTHENTICATION_FAILED(e.message))
   }
 }
 
-export function* apiWatcher() {
-  yield takeEvery(sagaCreateUser.type, apiWorker)
+export function* signInWorker(action) {
+  const {email, password} = action.payload
+  try {
+    const auth = firebase.auth()
+    const {user} = yield call([auth, auth.signInWithEmailAndPassword], email, password)
+    yield put(SIGN_IN_SUCCESS(user))
+  } catch (e) {
+    yield put(AUTHENTICATION_FAILED(e.message))
+  }
 }
 
-export function* signInWorker(action) {
-  const response = yield call(signInUser, action.payload)
-  yield put(signIn(response))
+export function* loggedWorker() {
+  try {
+    const response = yield call(onAuthStateChanged)
+    yield put(FETCH_AUTHORIZED_USER_SUCCESS(response))
+  } catch (e) {
+    yield put(SIGN_OUT_SUCCESS())
+  }
+}
+
+export function* signOutWorker() {
+  try {
+    const auth = firebase.auth()
+    yield call([auth, auth.signOut])
+    yield put(SIGN_OUT_SUCCESS())
+  } catch (e) {
+    yield put(AUTHENTICATION_FAILED('Что-то пошло не так'))
+  }
+}
+
+
+export function* registrationWatcher() {
+  yield takeLatest(sagaCreateUser.type, signUpWorker)
 }
 
 export function* signInWatcher() {
-  yield takeEvery(sagaSignInUser.type, signInWorker)
+  yield takeLatest(sagaSignInUser.type, signInWorker)
+}
+
+export function* loggedWatcher() {
+  yield takeLatest(sagaLoggedUser.type, loggedWorker)
+}
+
+export function* signOutWatcher() {
+  yield takeLatest(sagaSignOutUser.type, signOutWorker)
 }

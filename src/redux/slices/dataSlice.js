@@ -1,39 +1,43 @@
-import { createAction, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   status: null,
-  errorDetail: null,
-  data: {}
+  response: null,
+  data: {},
+  setAuthorized: false
 }
 
-export const sagaCreateUser = createAction('saga/sagaCreateUsers')
-export const sagaSignInUser = createAction('saga/sagaSignInUser')
+const reducerSuccess = (state, payload, response) => {
+  const {uid, email} = payload
+  state.status = 'success'
+  state.data = {uid, email}
+  state.response = response
+  state.setAuthorized = true
+}
 
 const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
-    createUser: (state, action) => {
-      state.status = 'success'
-      state.errorDetail = null
+    SIGN_UP_SUCCESS: (state, {payload}) => {
+      reducerSuccess(state, payload, 'Вы успешно зарегистрировались!')
     },
-    errorCreateUser: (state, action) => {
+    SIGN_IN_SUCCESS: (state, {payload}) => {
+      reducerSuccess(state, payload, 'Вы успешно авторизовались!')
+    },
+    SIGN_OUT_SUCCESS: (state, {payload}) => {
+      state.setAuthorized = false
+    },
+    FETCH_AUTHORIZED_USER_SUCCESS: (state, {payload}) => {
+      reducerSuccess(state, payload, 'Пользователи получены!')
+    },
+    AUTHENTICATION_FAILED: (state, {payload}) => {
       state.status = 'error'
-      state.errorDetail = action.payload
-    },
-    signIn: (state, {payload}) => {
-      if (payload.status === 'error') {
-        state.status = 'error'
-        state.errorDetail = payload.errorDetail
-      } else {
-        state.status = 'success'
-        state.errorDetail = null
-        state.data = payload
-      }
+      state.response = payload
     }
   },
 })
 
-export const {createUser, errorCreateUser, signIn} = usersSlice.actions
+export const {SIGN_UP_SUCCESS, SIGN_IN_SUCCESS, FETCH_AUTHORIZED_USER_SUCCESS, AUTHENTICATION_FAILED, SIGN_OUT_SUCCESS} = usersSlice.actions
 
 export default usersSlice.reducer
