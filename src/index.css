@@ -7,6 +7,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -15,4 +19,21 @@ code {
 h1, h2, h3, h4, h5 {
   margin: 0;
   padding: 0;
+}
+
+input {
+  height: 25px;
+}
+
+.btn {
+  display: block;
+  height: 40px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.accent_btn {
+  color: #fff;
+  border: none;
+  background-color: dodgerblue;
 }

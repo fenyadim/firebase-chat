@@ -69,7 +69,7 @@ export function* signOutWorker() {
 }
 
 
-export function* registrationWatcher() {
+export function* signUpWatcher() {
   yield takeLatest(SIGN_UP.type, signUpWorker)
 }
 

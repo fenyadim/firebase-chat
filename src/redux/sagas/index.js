@@ -1,9 +1,9 @@
 import { all } from 'redux-saga/effects'
-import { loggedWatcher, registrationWatcher, signInWatcher, signOutWatcher, } from "./apiSaga";
+import { loggedWatcher, signInWatcher, signOutWatcher, signUpWatcher, } from "./apiSaga";
 
 export default function* rootSaga() {
   yield all([
-    registrationWatcher(),
+    signUpWatcher(),
     signInWatcher(),
     loggedWatcher(),
     signOutWatcher()

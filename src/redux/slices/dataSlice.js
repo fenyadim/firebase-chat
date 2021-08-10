@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   data: {},
+  status: null,
   response: null,
   isAuthorized: false,
   isLoading: true
@@ -9,6 +10,7 @@ const initialState = {
 
 const reducerSuccess = (state, payload, response) => {
   const {uid, email} = payload
+  state.status = 'success'
   state.data = {uid, email}
   state.response = response
   state.isAuthorized = true
@@ -33,6 +35,7 @@ const usersSlice = createSlice({
     },
     SIGN_OUT: reducerRequest,
     SIGN_OUT_SUCCESS: (state, {payload}) => {
+      state.status = 'success'
       state.response = 'Вы успешно вышли!'
       state.isAuthorized = false
       state.isLoading = false
@@ -42,6 +45,8 @@ const usersSlice = createSlice({
       reducerSuccess(state, payload, 'Авторизированный пользователь получен!')
     },
     AUTHENTICATION_FAILED: (state, {payload}) => {
+      state.status = 'error'
+      state.isLoading = false
       state.response = payload
     }
   },
