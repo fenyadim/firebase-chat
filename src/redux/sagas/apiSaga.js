@@ -3,12 +3,15 @@ import { call, put, takeLatest } from 'redux-saga/effects'
 
 import {
   AUTHENTICATION_FAILED,
+  FETCH_AUTHORIZED_USER,
   FETCH_AUTHORIZED_USER_SUCCESS,
+  SIGN_IN,
   SIGN_IN_SUCCESS,
+  SIGN_OUT,
   SIGN_OUT_SUCCESS,
+  SIGN_UP,
   SIGN_UP_SUCCESS
 } from "../slices/dataSlice";
-import { sagaCreateUser, sagaLoggedUser, sagaSignInUser, sagaSignOutUser } from "../action/saga";
 
 
 const onAuthStateChanged = () => {
@@ -67,17 +70,17 @@ export function* signOutWorker() {
 
 
 export function* registrationWatcher() {
-  yield takeLatest(sagaCreateUser.type, signUpWorker)
+  yield takeLatest(SIGN_UP.type, signUpWorker)
 }
 
 export function* signInWatcher() {
-  yield takeLatest(sagaSignInUser.type, signInWorker)
+  yield takeLatest(SIGN_IN.type, signInWorker)
 }
 
 export function* loggedWatcher() {
-  yield takeLatest(sagaLoggedUser.type, loggedWorker)
+  yield takeLatest(FETCH_AUTHORIZED_USER.type, loggedWorker)
 }
 
 export function* signOutWatcher() {
-  yield takeLatest(sagaSignOutUser.type, signOutWorker)
+  yield takeLatest(SIGN_OUT.type, signOutWorker)
 }

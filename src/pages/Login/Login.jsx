@@ -1,10 +1,11 @@
 import React from "react";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { sagaLoggedUser, sagaSignInUser, sagaSignOutUser } from "../../redux/action/saga";
+import { Link } from "react-router-dom";
+
+import { SIGN_IN, SIGN_OUT } from "../../redux/slices/dataSlice";
 
 import styles from './Login.module.scss'
-import { Link } from "react-router-dom";
 
 const validate = values => {
   const errors = {};
@@ -21,12 +22,7 @@ const validate = values => {
 
 const Login = () => {
   const state = useSelector((state) => state.users)
-  const {status, response} = state
   const dispatch = useDispatch()
-
-  React.useEffect(() => {
-    dispatch(sagaLoggedUser())
-  }, [dispatch])
 
   const formik = useFormik({
     initialValues: {
@@ -35,7 +31,7 @@ const Login = () => {
     },
     validate,
     onSubmit: values => {
-      dispatch(sagaSignInUser({email: values.email, password: values.password}))
+      dispatch(SIGN_IN({email: values.email, password: values.password}))
     }
   })
 
@@ -53,7 +49,7 @@ const Login = () => {
         {formik.errors.password && formik.touched.password ? <span>{formik.errors.password}</span> : ''}
         <button type="submit">Войти</button>
       </form>
-      <button onClick={() => dispatch(sagaSignOutUser())}>Выход</button>
+      <button onClick={() => dispatch(SIGN_OUT())}>Выход</button>
       <Link to='/chat'>CHAT</Link>
     </div>
   )
