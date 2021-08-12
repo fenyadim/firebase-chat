@@ -15,7 +15,7 @@ const Login = () => {
       <Form>
         {status === 'error' && <span>{response}</span>}
         <label htmlFor="email">Email</label>
-        <Field type='email' name='email'/>
+        <Field type='email' name='email'/>npm
         <ErrorMessage name='email'/>
         <label htmlFor="password">Пароль</label>
         <Field type='password' name='password'/>
