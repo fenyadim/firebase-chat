@@ -21,7 +21,6 @@ const Login = () => {
         <Field type='password' name='password'/>
         <ErrorMessage name='password'/>
         <button className='btn accent_btn' type='submit'>Войти</button>
-        test
       </Form>
       <Link to='/registration'>
         <button>Регистрация</button>
