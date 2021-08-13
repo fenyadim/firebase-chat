@@ -33,11 +33,20 @@ const usersSlice = createSlice({
     SIGN_IN_SUCCESS: (state, {payload}) => {
       reducerSuccess(state, payload, 'Вы успешно авторизовались!')
     },
+    SIGN_IN_GOOGLE: reducerRequest,
+    SIGN_IN_GOOGLE_SUCCESS: (state, {payload}) => {
+      reducerSuccess(state, {payload}, 'Вы успешно авторизовались через Google!')
+    },
     SIGN_OUT: reducerRequest,
     SIGN_OUT_SUCCESS: (state, {payload}) => {
       state.status = 'success'
       state.response = 'Вы успешно вышли!'
       state.isAuthorized = false
+      state.isLoading = false
+    },
+    FORGOT: reducerRequest,
+    FORGOT_SUCCESS: (state, {payload}) => {
+      state.response = payload
       state.isLoading = false
     },
     FETCH_AUTHORIZED_USER: reducerRequest,
@@ -57,6 +66,10 @@ export const {
   SIGN_UP_SUCCESS,
   SIGN_IN,
   SIGN_IN_SUCCESS,
+  SIGN_IN_GOOGLE,
+  SIGN_IN_GOOGLE_SUCCESS,
+  FORGOT,
+  FORGOT_SUCCESS,
   FETCH_AUTHORIZED_USER_SUCCESS,
   AUTHENTICATION_FAILED,
   SIGN_OUT,

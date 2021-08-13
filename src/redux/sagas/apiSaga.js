@@ -5,7 +5,11 @@ import {
   AUTHENTICATION_FAILED,
   FETCH_AUTHORIZED_USER,
   FETCH_AUTHORIZED_USER_SUCCESS,
+  FORGOT,
+  FORGOT_SUCCESS,
   SIGN_IN,
+  SIGN_IN_GOOGLE,
+  SIGN_IN_GOOGLE_SUCCESS,
   SIGN_IN_SUCCESS,
   SIGN_OUT,
   SIGN_OUT_SUCCESS,
@@ -38,9 +42,32 @@ export function* signUpWorker(action) {
   }
 }
 
+export function* signInGoogleWorker() {
+  const provider = new firebase.auth.GoogleAuthProvider()
+  try {
+    const auth = firebase.auth()
+    const {user} = yield call([auth, auth.signInWithPopup], provider)
+    yield put(SIGN_IN_GOOGLE_SUCCESS(user))
+  } catch (e) {
+    yield put(AUTHENTICATION_FAILED(e.message))
+  }
+}
+
+export function* forgotWorker(action) {
+  try {
+    const {email} = action.payload
+    const auth = firebase.auth()
+    yield call([auth, auth.sendPasswordResetEmail], email)
+    yield put(FORGOT_SUCCESS('Вам на почту придет письмо с указаниями для сброса пароля'))
+  } catch (e) {
+    yield put(AUTHENTICATION_FAILED(e.message))
+  }
+}
+
 export function* signInWorker(action) {
   const {email, password} = action.payload
   try {
+    console.log(action)
     const auth = firebase.auth()
     const {user} = yield call([auth, auth.signInWithEmailAndPassword], email, password)
     yield put(SIGN_IN_SUCCESS(user))
@@ -75,6 +102,14 @@ export function* signUpWatcher() {
 
 export function* signInWatcher() {
   yield takeLatest(SIGN_IN.type, signInWorker)
+}
+
+export function* signInGoogleWatcher() {
+  yield takeLatest(SIGN_IN_GOOGLE.type, signInGoogleWorker)
+}
+
+export function* forgotWatcher() {
+  yield takeLatest(FORGOT.type, forgotWorker)
 }
 
 export function* loggedWatcher() {

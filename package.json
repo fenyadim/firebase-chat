@@ -52,6 +52,7 @@
     "@types/jest": "^26.0.24",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.6",
+    "enzyme-to-json": "^3.6.2",
     "ts-jest": "^27.0.4"
   }
 }

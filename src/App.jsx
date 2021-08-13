@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
 
 import { FETCH_AUTHORIZED_USER } from "./redux/slices/dataSlice";
-import { Chat, Login, Registration } from "./pages";
+import { Chat, ForgotPassword, Login, Registration } from "./pages";
 import { Layout } from "./components";
 
 function App() {
@@ -25,6 +25,7 @@ function App() {
         <Switch>
           <Route path='/login' component={Login} exact/>
           <Route path='/registration' component={Registration} exact/>
+          <Route path='/forgot' component={ForgotPassword} exact/>
           <Redirect to='login'/>
         </Switch>
       ) : (

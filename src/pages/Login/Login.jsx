@@ -1,33 +1,34 @@
 import React from "react";
-import { ErrorMessage, Field, Form } from "formik";
-import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
-import FormLayout from "../../components/FormLayout/FormLayout";
+import { FormLayout } from "../../components";
 
-import { SIGN_IN } from "../../redux/slices/dataSlice";
+import { SIGN_IN, SIGN_IN_GOOGLE } from "../../redux/slices/dataSlice";
 
 const Login = () => {
-  const {status, response} = useSelector(state => state.users)
+  const dispatch = useDispatch()
 
   return (
-    <FormLayout dispatchType={SIGN_IN} name='Авторизация'>
-      <Form>
-        {status === 'error' && <span>{response}</span>}
-        <label htmlFor="email">Email</label>
-        <Field type='email' name='email'/>
-        <ErrorMessage name='email'/>
-        <label htmlFor="password">Пароль</label>
-        <Field type='password' name='password'/>
-        <ErrorMessage name='password'/>
-        <button className='btn accent_btn' type='submit'>Войти</button>
-      </Form>
+    <FormLayout dispatchType={SIGN_IN} name='Авторизация' inputs={[{
+      name: 'Email',
+      nameInput: 'email',
+      type: 'email',
+      value: ''
+    }, {
+      name: 'Пароль',
+      nameInput: 'password',
+      type: 'password',
+      value: ''
+    }]} nameSubmitBtn='Войти'>
       <Link to='/registration'>
         <button>Регистрация</button>
       </Link>
       <Link to='/forgot'>
         <button>Забыли пароль?</button>
       </Link>
+      <button>Войти через VK</button>
+      <button onClick={() => dispatch(SIGN_IN_GOOGLE())}>Войти через Google</button>
     </FormLayout>
   )
 }
