@@ -1,43 +1,53 @@
 import React from 'react';
-import { ErrorMessage, Field, FieldArray, Form, Formik } from "formik";
+import { Field, FieldArray, Form, Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from 'yup'
+import { ToastContainer } from "react-toastify";
 
 import styles from "./FormLayout.module.scss";
 
 const schema = Yup.object().shape({
   inputs: Yup.array().of(
     Yup.object().shape({
-      nameInput: Yup.string().when("email", {
-        is: true,
-        then: Yup.string()
-          .email('Неправильный email!')
-          .required('Введите email'),
-      })
+      email: Yup.string()
+        .when('nameInput', {
+          is: 'email',
+          then: Yup.string()
+            .email('Неправильный email')
+            .required('Введите email')
+        }),
+      password: Yup.string()
+        .when('nameInput', {
+          is: 'password',
+          then: Yup.string()
+            .required('Введите пароль')
+          // .matches(
+          //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/,
+          //   "Пароль должен содержать цифру, буквы в нижнем и верхнем регистре и иметь длину не менее 8 знаков"
+          // ),
+        }),
+      confirmPassword: Yup.string()
+        .when('nameInput', {
+            is: 'confirmPassword',
+            then: Yup.string()
+              .test(
+                'match',
+                'НЕ РАБОТАЕТ',
+                function (value) {
+                  console.log(Yup.ref('password') === value)
+                }
+              )
+          }
+          // .test({
+          //   name: 'Test',
+          //   test: value => console.log(value)
+          // })
+          // Yup.string()
+          //   .oneOf([Yup.ref('password'), null], 'Пароли несовпадают')
+        ),
     })
   )
 })
-
-// const schema = Yup.object().shape({
-//   inputs: Yup.array().of(
-//     Yup.object.shape({
-//       nameInput: Yup.string().when("email", {
-//         is: true,
-//         then: Yup.string()
-//           .email('Неправильный email!')
-//           .required('Введите email'),
-//       })
-//     })
-//   )
-//   // email: Yup.string()
-//   //   .email('Неправильный email!')
-//   //   .required('Введите email'),
-//   // password: Yup.string()
-//   //   .min(5, 'Слишком короткий пароль!')
-//   //   .required('Введите пароль'),
-//   // confirmPassword: Yup.string()
-//   //   .oneOf([Yup.ref('password'), null], 'Пароли несовпадают')
-// })
 
 const FromLayout = ({children, dispatchType, name, inputs, nameSubmitBtn}) => {
   const {status, response} = useSelector(state => state.users)
@@ -53,38 +63,40 @@ const FromLayout = ({children, dispatchType, name, inputs, nameSubmitBtn}) => {
           initialValues={{inputs}}
           validationSchema={schema}
           onSubmit={values => {
-            console.log(values)
             const response = {}
             values.inputs.forEach(item => {
-              response[item.nameInput] = item.value
+              response[item.nameInput] = item[item.nameInput]
             })
             const {email, password} = response
             if (email === undefined) {
               dispatch(dispatchType({password: password}))
             } else if (password === undefined) {
-              console.log(`РАБОТАЕТ ${email}`)
               dispatch(dispatchType({email: email}))
             } else {
               dispatch(dispatchType({email: email, password: password}))
             }
           }}
         >
-          {({values, setFieldValue}) => (
+          {({values, errors, touched, setFieldValue}) => (
             <Form>
-              {status === 'error' && <span>{response}</span>}
-              <FieldArray name='inputs' render={({replace}) => (
+              {status === 'error' || (errors.inputs && touched.inputs) ?
+                <ul className='error_block'>
+                  {status === 'error' ? <li>{response}</li> : ''}
+                  {errors.inputs && touched.inputs && errors.inputs.map((input, index) =>
+                    input && <li key={index}>{Object.values(input)[0]}</li>
+                  )}
+                </ul>
+                : ''}
+              {status === 'success' && <ToastContainer/>}
+              <FieldArray name='inputs' render={() => (
                 <>
-                  {values.inputs.map(({type, name, nameInput, value}, index) => (
+                  {values.inputs.map((input, index) => (
                     <React.Fragment key={index}>
-                      <label htmlFor='email'>{name}</label>
-                      <Field type={type} name={nameInput} value={value || ''}
-                             onChange={(e) => replace(index, {
-                               name,
-                               nameInput,
-                               type,
-                               value: e.target.value
-                             })}/>
-                      <ErrorMessage name={nameInput}/>
+                      <label htmlFor='email'>{input.name}</label>
+                      <Field type={input.type} name={input.nameInput}
+                             onChange={(e) => {
+                               input[input.nameInput] = e.target.value
+                             }}/>
                     </React.Fragment>
                   ))}
                 </>

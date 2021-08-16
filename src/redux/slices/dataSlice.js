@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 
 const initialState = {
   data: {},
@@ -15,6 +16,7 @@ const reducerSuccess = (state, payload, response) => {
   state.response = response
   state.isAuthorized = true
   state.isLoading = false
+  toast.success(state.response)
 }
 
 const reducerRequest = (state, action) => {
@@ -48,6 +50,7 @@ const usersSlice = createSlice({
     FORGOT_SUCCESS: (state, {payload}) => {
       state.response = payload
       state.isLoading = false
+      toast.success(state.response)
     },
     FETCH_AUTHORIZED_USER: reducerRequest,
     FETCH_AUTHORIZED_USER_SUCCESS: (state, {payload}) => {

@@ -2,9 +2,9 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
-import { FormLayout } from "../../components";
+import { FormLayout } from "../../../components";
 
-import { SIGN_IN, SIGN_IN_GOOGLE } from "../../redux/slices/dataSlice";
+import { SIGN_IN, SIGN_IN_GOOGLE } from "../../../redux/slices/dataSlice";
 
 const Login = () => {
   const dispatch = useDispatch()
@@ -14,12 +14,12 @@ const Login = () => {
       name: 'Email',
       nameInput: 'email',
       type: 'email',
-      value: ''
+      email: '',
     }, {
       name: 'Пароль',
       nameInput: 'password',
       type: 'password',
-      value: ''
+      password: '',
     }]} nameSubmitBtn='Войти'>
       <Link to='/registration'>
         <button>Регистрация</button>

@@ -1,19 +1,17 @@
 import React from 'react';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAdversal } from "@fortawesome/free-brands-svg-icons";
-import { useDispatch } from "react-redux";
+import { toast, ToastContainer } from "react-toastify";
 
-import { SIGN_OUT } from "../../redux/slices/dataSlice";
+import { ChatLayout } from "../../components";
 
 const Chat = () => {
-  const dispatch = useDispatch()
+  const notify = () => toast('Hello, World!')
 
   return (
-    <div>
+    <ChatLayout>
       <h1>Chat</h1>
-      <FontAwesomeIcon icon={faAdversal} size='10x'/>
-      <button onClick={() => dispatch(SIGN_OUT())}>Выход</button>
-    </div>
+      <button onClick={notify}>Notify!</button>
+      <ToastContainer />
+    </ChatLayout>
   );
 };
 
