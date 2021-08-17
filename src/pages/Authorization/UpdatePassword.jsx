@@ -23,7 +23,7 @@ const UpdatePassword = () => {
       nameInput: 'confirmPassword',
       type: 'password',
       confirmPassword: ''
-    }]} nameSubmitBtn='Отправить ссылку для восстановления'>
+    }]} nameSubmitBtn='Сменить пароль'>
       <Link to='/login'>
         <button>Войти</button>
       </Link>
