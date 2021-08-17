@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 
-import { FormLayout } from "../../../components";
-import { FORGOT } from "../../../redux/slices/dataSlice";
+import { FormLayout } from "../../components";
+import { FORGOT } from "../../redux/slices/dataSlice";
 
 const ForgotPassword = () => {
   return (

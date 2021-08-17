@@ -2,7 +2,6 @@ import React from 'react';
 import { Field, FieldArray, Form, Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from 'yup'
-import { ToastContainer } from "react-toastify";
 
 import styles from "./FormLayout.module.scss";
 
@@ -21,37 +20,54 @@ const schema = Yup.object().shape({
           is: 'password',
           then: Yup.string()
             .required('Введите пароль')
-          // .matches(
-          //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/,
-          //   "Пароль должен содержать цифру, буквы в нижнем и верхнем регистре и иметь длину не менее 8 знаков"
-          // ),
+            .matches(
+              /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/,
+              "Пароль должен содержать цифру, буквы в нижнем и верхнем регистре и иметь длину не менее 8 знаков"
+            ),
         }),
       confirmPassword: Yup.string()
         .when('nameInput', {
             is: 'confirmPassword',
             then: Yup.string()
-              .test(
-                'match',
-                'НЕ РАБОТАЕТ',
-                function (value) {
-                  console.log(Yup.ref('password') === value)
-                }
-              )
           }
-          // .test({
-          //   name: 'Test',
-          //   test: value => console.log(value)
-          // })
-          // Yup.string()
-          //   .oneOf([Yup.ref('password'), null], 'Пароли несовпадают')
         ),
     })
   )
+    .test(
+      'confirmPassword',
+      'Пароли несовпадают',
+      function (values) {
+        const response = {}
+        values.map((item) => {
+          response[item.nameInput] = item[item.nameInput]
+        })
+        if (response.confirmPassword !== undefined) {
+          return response.password === response.confirmPassword;
+        }
+        return true
+      }
+    )
 })
 
-const FromLayout = ({children, dispatchType, name, inputs, nameSubmitBtn}) => {
+const FromLayout = ({children, dispatchType, name, inputs, nameSubmitBtn, additionalParam}) => {
   const {status, response} = useSelector(state => state.users)
   const dispatch = useDispatch()
+
+  const dispatchPayload = (email, password, additional) => {
+    let objToPass = {}
+    if (email === undefined) {
+      objToPass.password = password
+    } else if (password === undefined) {
+      objToPass.email = email
+    } else {
+      objToPass.email = email
+      objToPass.password = password
+    }
+    if (additional) {
+      objToPass.additional = additional
+    }
+    return objToPass
+  }
 
   return (
     <div className={styles.authWrapper}>
@@ -63,18 +79,12 @@ const FromLayout = ({children, dispatchType, name, inputs, nameSubmitBtn}) => {
           initialValues={{inputs}}
           validationSchema={schema}
           onSubmit={values => {
-            const response = {}
+            let response = {}
             values.inputs.forEach(item => {
               response[item.nameInput] = item[item.nameInput]
             })
             const {email, password} = response
-            if (email === undefined) {
-              dispatch(dispatchType({password: password}))
-            } else if (password === undefined) {
-              dispatch(dispatchType({email: email}))
-            } else {
-              dispatch(dispatchType({email: email, password: password}))
-            }
+            dispatch(dispatchType(dispatchPayload(email, password, additionalParam)))
           }}
         >
           {({values, errors, touched, setFieldValue}) => (
@@ -82,12 +92,11 @@ const FromLayout = ({children, dispatchType, name, inputs, nameSubmitBtn}) => {
               {status === 'error' || (errors.inputs && touched.inputs) ?
                 <ul className='error_block'>
                   {status === 'error' ? <li>{response}</li> : ''}
-                  {errors.inputs && touched.inputs && errors.inputs.map((input, index) =>
-                    input && <li key={index}>{Object.values(input)[0]}</li>
-                  )}
+                  {errors.inputs && touched.inputs && ((Array.isArray(errors.inputs)) ? errors.inputs.map((input, index) =>
+                    <li key={index}>{Object.values(input)[0]}</li>
+                  ) : <li>{errors.inputs}</li>)}
                 </ul>
                 : ''}
-              {status === 'success' && <ToastContainer/>}
               <FieldArray name='inputs' render={() => (
                 <>
                   {values.inputs.map((input, index) => (

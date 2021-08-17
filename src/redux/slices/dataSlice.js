@@ -52,9 +52,13 @@ const usersSlice = createSlice({
       state.isLoading = false
       toast.success(state.response)
     },
+    UPDATE_PASSWORD: reducerRequest,
+    UPDATE_PASSWORD_SUCCESS: (state, {payload}) => {
+      reducerSuccess(state, {payload}, 'Вы успешно сменили пароль!')
+    },
     FETCH_AUTHORIZED_USER: reducerRequest,
     FETCH_AUTHORIZED_USER_SUCCESS: (state, {payload}) => {
-      reducerSuccess(state, payload, 'Авторизированный пользователь получен!')
+      reducerSuccess(state, payload)
     },
     AUTHENTICATION_FAILED: (state, {payload}) => {
       state.status = 'error'
@@ -73,6 +77,8 @@ export const {
   SIGN_IN_GOOGLE_SUCCESS,
   FORGOT,
   FORGOT_SUCCESS,
+  UPDATE_PASSWORD,
+  UPDATE_PASSWORD_SUCCESS,
   FETCH_AUTHORIZED_USER_SUCCESS,
   AUTHENTICATION_FAILED,
   SIGN_OUT,

@@ -1,9 +1,20 @@
-import { ActiveChat, Chat, CompletedChat, ForgotPassword, Login, Registration, SavedChat, WorkChat } from './pages/'
+import {
+  ActiveChat,
+  Chat,
+  CompletedChat,
+  ForgotPassword,
+  Login,
+  Registration,
+  SavedChat,
+  UpdatePassword,
+  WorkChat
+} from './pages/'
 
 export const publicRoutes = [
   {path: '/login', component: Login},
   {path: '/registration', component: Registration},
-  {path: '/forgot', component: ForgotPassword}
+  {path: '/forgot', component: ForgotPassword},
+  {path: '/update-password', component: UpdatePassword}
 ]
 
 export const privateRoutes = [

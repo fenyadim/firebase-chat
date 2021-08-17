@@ -6,6 +6,7 @@ import {
   signInWatcher,
   signOutWatcher,
   signUpWatcher,
+  updatePasswordWatcher,
 } from "./apiSaga";
 
 export default function* rootSaga() {
@@ -15,6 +16,7 @@ export default function* rootSaga() {
     signInGoogleWatcher(),
     forgotWatcher(),
     loggedWatcher(),
-    signOutWatcher()
+    signOutWatcher(),
+    updatePasswordWatcher()
   ])
 }

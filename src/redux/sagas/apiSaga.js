@@ -14,9 +14,10 @@ import {
   SIGN_OUT,
   SIGN_OUT_SUCCESS,
   SIGN_UP,
-  SIGN_UP_SUCCESS
+  SIGN_UP_SUCCESS,
+  UPDATE_PASSWORD,
+  UPDATE_PASSWORD_SUCCESS
 } from "../slices/dataSlice";
-
 
 const onAuthStateChanged = () => {
   return new Promise((resolve, reject) => {
@@ -30,6 +31,7 @@ const onAuthStateChanged = () => {
     })
   })
 }
+
 
 export function* signUpWorker(action) {
   const {email, password} = action.payload
@@ -56,6 +58,9 @@ export function* signInGoogleWorker() {
 export function* forgotWorker(action) {
   try {
     const {email} = action.payload
+    const actionCodeSettings = {
+      url: 'http://localhost:3000/update-password?email=' + email
+    }
     const auth = firebase.auth()
     yield call([auth, auth.sendPasswordResetEmail], email)
     yield put(FORGOT_SUCCESS('Вам на почту придет письмо с указаниями для сброса пароля'))
@@ -95,6 +100,19 @@ export function* signOutWorker() {
   }
 }
 
+export function* updatePasswordWorker(action) {
+  try {
+    const {password, additional} = action.payload
+    const auth = firebase.auth()
+    const email = yield call([auth, auth.verifyPasswordResetCode], additional)
+    yield call([auth, auth.confirmPasswordReset], additional, password)
+    const {user} = yield call([auth, auth.signInWithEmailAndPassword], email, password)
+    yield put(UPDATE_PASSWORD_SUCCESS(user))
+  } catch (e) {
+    yield put(AUTHENTICATION_FAILED('Пользователь не найден'))
+  }
+}
+
 
 export function* signUpWatcher() {
   yield takeLatest(SIGN_UP.type, signUpWorker)
@@ -118,4 +136,8 @@ export function* loggedWatcher() {
 
 export function* signOutWatcher() {
   yield takeLatest(SIGN_OUT.type, signOutWorker)
+}
+
+export function* updatePasswordWatcher() {
+  yield takeLatest(UPDATE_PASSWORD.type, updatePasswordWorker)
 }
