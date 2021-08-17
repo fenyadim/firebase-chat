@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
 
 import { FETCH_AUTHORIZED_USER } from "./redux/slices/dataSlice";
-import { Chat, Login, Registration } from "./pages";
 import { Layout } from "./components";
+import { privateRoutes, publicRoutes } from "./routes";
 
 function App() {
   const state = useSelector((state) => state.users)
@@ -23,13 +23,13 @@ function App() {
     <Layout>
       {!isAuthorized ? (
         <Switch>
-          <Route path='/login' component={Login} exact/>
-          <Route path='/registration' component={Registration} exact/>
+          {publicRoutes.map(({path, component}, index) => <Route key={index} path={path} component={component} exact/>)}
           <Redirect to='login'/>
         </Switch>
       ) : (
         <Switch>
-          <Route path='/chat' component={Chat} exact/>
+          {privateRoutes.map(({path, component}, index) => <Route key={index} path={path} component={component}
+                                                                  exact/>)}
           <Redirect to='chat'/>
         </Switch>
       )}

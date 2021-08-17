@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 
 const initialState = {
   data: {},
@@ -15,6 +16,7 @@ const reducerSuccess = (state, payload, response) => {
   state.response = response
   state.isAuthorized = true
   state.isLoading = false
+  toast.success(state.response)
 }
 
 const reducerRequest = (state, action) => {
@@ -33,6 +35,10 @@ const usersSlice = createSlice({
     SIGN_IN_SUCCESS: (state, {payload}) => {
       reducerSuccess(state, payload, 'Вы успешно авторизовались!')
     },
+    SIGN_IN_GOOGLE: reducerRequest,
+    SIGN_IN_GOOGLE_SUCCESS: (state, {payload}) => {
+      reducerSuccess(state, {payload}, 'Вы успешно авторизовались через Google!')
+    },
     SIGN_OUT: reducerRequest,
     SIGN_OUT_SUCCESS: (state, {payload}) => {
       state.status = 'success'
@@ -40,9 +46,19 @@ const usersSlice = createSlice({
       state.isAuthorized = false
       state.isLoading = false
     },
+    FORGOT: reducerRequest,
+    FORGOT_SUCCESS: (state, {payload}) => {
+      state.response = payload
+      state.isLoading = false
+      toast.success(state.response)
+    },
+    UPDATE_PASSWORD: reducerRequest,
+    UPDATE_PASSWORD_SUCCESS: (state, {payload}) => {
+      reducerSuccess(state, {payload}, 'Вы успешно сменили пароль!')
+    },
     FETCH_AUTHORIZED_USER: reducerRequest,
     FETCH_AUTHORIZED_USER_SUCCESS: (state, {payload}) => {
-      reducerSuccess(state, payload, 'Авторизированный пользователь получен!')
+      reducerSuccess(state, payload)
     },
     AUTHENTICATION_FAILED: (state, {payload}) => {
       state.status = 'error'
@@ -57,6 +73,12 @@ export const {
   SIGN_UP_SUCCESS,
   SIGN_IN,
   SIGN_IN_SUCCESS,
+  SIGN_IN_GOOGLE,
+  SIGN_IN_GOOGLE_SUCCESS,
+  FORGOT,
+  FORGOT_SUCCESS,
+  UPDATE_PASSWORD,
+  UPDATE_PASSWORD_SUCCESS,
   FETCH_AUTHORIZED_USER_SUCCESS,
   AUTHENTICATION_FAILED,
   SIGN_OUT,

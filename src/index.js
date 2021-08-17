@@ -7,7 +7,8 @@ import firebase from "firebase";
 import App from './App';
 import { store } from "./redux/store";
 
-import './index.css';
+import './index.scss';
+import 'react-toastify/dist/ReactToastify.css';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBg3MjTG_LFkxmx7086bjzeCM_h9krSU_k",
