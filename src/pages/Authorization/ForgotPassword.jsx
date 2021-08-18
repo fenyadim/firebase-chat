@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import { FormLayout } from "../../components";
 import { FORGOT } from "../../redux/slices/dataSlice";
+import { Button, FormGroup } from "reactstrap";
 
 const ForgotPassword = () => {
   return (
@@ -11,12 +12,14 @@ const ForgotPassword = () => {
       nameInput: 'email',
       type: 'email'
     }]} nameSubmitBtn='Отправить ссылку для восстановления'>
-      <Link to='/login'>
-        <button>Войти</button>
-      </Link>
-      <Link to='/registration'>
-        <button>Регистрация</button>
-      </Link>
+      <FormGroup className='d-flex justify-content-between p-3 pt-0'>
+        <Link to='/login'>
+          <Button color='link'>Войти</Button>
+        </Link>
+        <Link to='/registration'>
+          <Button color='link'>Регистрация</Button>
+        </Link>
+      </FormGroup>
     </FormLayout>
   );
 };

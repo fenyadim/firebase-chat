@@ -10,7 +10,7 @@ const initialState = {
 }
 
 const reducerSuccess = (state, payload, response) => {
-  const {uid, email} = payload
+  const {uid, email} = !payload.payload ? payload : payload.payload
   state.status = 'success'
   state.data = {uid, email}
   state.response = response
@@ -19,7 +19,7 @@ const reducerSuccess = (state, payload, response) => {
   toast.success(state.response)
 }
 
-const reducerRequest = (state, action) => {
+const reducerRequest = (state) => {
   state.isLoading = true
 }
 

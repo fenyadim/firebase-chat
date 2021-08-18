@@ -1,17 +1,18 @@
 import React from "react";
 import { ToastContainer } from "react-toastify";
 import { useSelector } from "react-redux";
-
-import styles from './Layout.module.scss'
+import { Col, Container } from "reactstrap";
 
 const Layout = ({children}) => {
   const {status} = useSelector(state => state.users)
 
   return (
-    <div className={styles.layout}>
-      {children}
-      {status === 'success' && <ToastContainer/>}
-    </div>
+    <Container>
+      <Col className='vh-100 d-flex justify-content-center align-items-center'>
+        {children}
+        {status === 'success' && <ToastContainer/>}
+      </Col>
+    </Container>
   )
 }
 

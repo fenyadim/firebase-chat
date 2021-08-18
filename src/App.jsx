@@ -1,6 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
+import { Spinner } from "reactstrap";
 
 import { FETCH_AUTHORIZED_USER } from "./redux/slices/dataSlice";
 import { Layout } from "./components";
@@ -16,7 +17,7 @@ function App() {
   }, [dispatch])
 
   if (isLoading) {
-    return <h1>Загрузка...</h1>
+    return <Layout><Spinner color='primary' style={{ width: '3rem', height: '3rem' }} /></Layout>
   }
 
   return (
