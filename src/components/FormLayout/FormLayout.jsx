@@ -13,7 +13,8 @@ const FormikInputs = ({input}) => {
       <Label htmlFor='email'>{input.name}</Label>
       <Field>
         {() => (
-          <Input className='mb-2' type={input.type} name={input.nameInput} onChange={(e) => input[input.nameInput] = e.target.value}/>
+          <Input className='mb-2' type={input.type} name={input.nameInput}
+                 onChange={(e) => input[input.nameInput] = e.target.value}/>
         )}
       </Field>
     </FormGroup>
@@ -89,42 +90,40 @@ const FromLayout = ({children, dispatchType, name, inputs, nameSubmitBtn, additi
       <div className='bg-primary col p-3 mb-1'>
         <h1 className='fs-2 text-light text-center'>{name}</h1>
       </div>
-      <div>
-        <Formik
-          initialValues={{inputs}}
-          validationSchema={schema}
-          onSubmit={values => {
-            let response = {}
-            values.inputs.forEach(item => {
-              response[item.nameInput] = item[item.nameInput]
-            })
-            const {email, password} = response
-            dispatch(dispatchType(dispatchPayload(email, password, additionalParam)))
-          }}
-        >
-          {({values, errors, touched, handleSubmit}) => (
-            <Form className='p-3' onSubmit={handleSubmit}>
-              {status === 'error' || (errors.inputs && touched.inputs) ?
-                <ul className='error_block'>
-                  {status === 'error' ? <li>{response}</li> : ''}
-                  {errors.inputs && touched.inputs && ((Array.isArray(errors.inputs)) ? errors.inputs.map((input, index) =>
-                    <li key={index}>{Object.values(input)[0]}</li>
-                  ) : <li>{errors.inputs}</li>)}
-                </ul>
-                : ''}
-              <FieldArray name='inputs' render={() => (
-                <>
-                  {values.inputs.map((input, index) => (
-                    <FormikInputs key={index} input={input}/>
-                  ))}
-                </>
-              )}/>
-              <Button className='mt-3' type="submit" color='primary'>{nameSubmitBtn}</Button>
-            </Form>
-          )}
-        </Formik>
-        {children}
-      </div>
+      <Formik
+        initialValues={{inputs}}
+        validationSchema={schema}
+        onSubmit={values => {
+          let response = {}
+          values.inputs.forEach(item => {
+            response[item.nameInput] = item[item.nameInput]
+          })
+          const {email, password} = response
+          dispatch(dispatchType(dispatchPayload(email, password, additionalParam)))
+        }}
+      >
+        {({values, errors, touched, handleSubmit}) => (
+          <Form className='p-3' onSubmit={handleSubmit}>
+            {status === 'error' || (errors.inputs && touched.inputs) ?
+              <ul className='error_block'>
+                {status === 'error' ? <li>{response}</li> : ''}
+                {errors.inputs && touched.inputs && ((Array.isArray(errors.inputs)) ? errors.inputs.map((input, index) =>
+                  <li key={index}>{Object.values(input)[0]}</li>
+                ) : <li>{errors.inputs}</li>)}
+              </ul>
+              : ''}
+            <FieldArray name='inputs' render={() => (
+              <>
+                {values.inputs.map((input, index) => (
+                  <FormikInputs key={index} input={input}/>
+                ))}
+              </>
+            )}/>
+            <Button className='mt-3 w-100' type="submit" color='primary'>{nameSubmitBtn}</Button>
+          </Form>
+        )}
+      </Formik>
+      {children}
     </div>
   );
 };

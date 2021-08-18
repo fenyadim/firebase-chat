@@ -4,20 +4,4 @@
   min-height: 300px;
   width: 400px;
   overflow: hidden;
-
-  .titleWrapper {
-    background-color: dodgerblue;
-    color: #fff;
-  }
-
-  .formWrapper {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
-
-  form {
-    display: flex;
-    flex-direction: column;
-  }
 }

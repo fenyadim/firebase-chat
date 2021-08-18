@@ -11,6 +11,8 @@ const ChatLayout = ({children}) => {
   const {email} = data
   const dispatch = useDispatch()
 
+  console.log(data)
+
   return (
     <div className={styles.chatWrapper}>
       <div className={styles.tabs}>

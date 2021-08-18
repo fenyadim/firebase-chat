@@ -32,7 +32,7 @@ const onAuthStateChanged = () => {
   })
 }
 
-
+// Workers
 export function* signUpWorker(action) {
   const {email, password} = action.payload
   try {
@@ -72,7 +72,6 @@ export function* forgotWorker(action) {
 export function* signInWorker(action) {
   const {email, password} = action.payload
   try {
-    console.log(action)
     const auth = firebase.auth()
     const {user} = yield call([auth, auth.signInWithEmailAndPassword], email, password)
     yield put(SIGN_IN_SUCCESS(user))
@@ -114,6 +113,7 @@ export function* updatePasswordWorker(action) {
 }
 
 
+// Watchers
 export function* signUpWatcher() {
   yield takeLatest(SIGN_UP.type, signUpWorker)
 }
