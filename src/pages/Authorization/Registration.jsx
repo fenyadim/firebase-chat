@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from "react-router-dom";
+import { Button, FormGroup } from "reactstrap";
 
 import { FormLayout } from "../../components";
 import { SIGN_UP } from "../../redux/slices/dataSlice";
@@ -22,12 +23,14 @@ const Registration = () => {
       type: 'password',
       confirmPassword: ''
     }]} nameSubmitBtn='Зарегистрироваться'>
-      <Link to='/login'>
-        <button>Авторизация</button>
-      </Link>
-      <Link to='/forgot'>
-        <button>Забыли пароль?</button>
-      </Link>
+      <FormGroup className='d-flex justify-content-between p-3 pt-0'>
+        <Link to='/login'>
+          <Button color='link'>Авторизация</Button>
+        </Link>
+        <Link to='/forgot'>
+          <Button color='link'>Забыли пароль?</Button>
+        </Link>
+      </FormGroup>
     </FormLayout>
   )
 };

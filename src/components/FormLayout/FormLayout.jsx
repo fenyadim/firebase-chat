@@ -1,9 +1,24 @@
 import React from 'react';
-import { Field, FieldArray, Form, Formik } from "formik";
+import { Field, FieldArray, Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
+import { Button, Form, FormGroup, Input, Label } from "reactstrap";
 import * as Yup from 'yup'
 
 import styles from "./FormLayout.module.scss";
+
+
+const FormikInputs = ({input}) => {
+  return (
+    <FormGroup>
+      <Label htmlFor='email'>{input.name}</Label>
+      <Field>
+        {() => (
+          <Input className='mb-2' type={input.type} name={input.nameInput} onChange={(e) => input[input.nameInput] = e.target.value}/>
+        )}
+      </Field>
+    </FormGroup>
+  )
+}
 
 const schema = Yup.object().shape({
   inputs: Yup.array().of(
@@ -71,10 +86,10 @@ const FromLayout = ({children, dispatchType, name, inputs, nameSubmitBtn, additi
 
   return (
     <div className={styles.authWrapper}>
-      <div className={styles.titleWrapper}>
-        <h1>{name}</h1>
+      <div className='bg-primary col p-3 mb-1'>
+        <h1 className='fs-2 text-light text-center'>{name}</h1>
       </div>
-      <div className={styles.formWrapper}>
+      <div>
         <Formik
           initialValues={{inputs}}
           validationSchema={schema}
@@ -87,8 +102,8 @@ const FromLayout = ({children, dispatchType, name, inputs, nameSubmitBtn, additi
             dispatch(dispatchType(dispatchPayload(email, password, additionalParam)))
           }}
         >
-          {({values, errors, touched, setFieldValue}) => (
-            <Form>
+          {({values, errors, touched, handleSubmit}) => (
+            <Form className='p-3' onSubmit={handleSubmit}>
               {status === 'error' || (errors.inputs && touched.inputs) ?
                 <ul className='error_block'>
                   {status === 'error' ? <li>{response}</li> : ''}
@@ -100,17 +115,11 @@ const FromLayout = ({children, dispatchType, name, inputs, nameSubmitBtn, additi
               <FieldArray name='inputs' render={() => (
                 <>
                   {values.inputs.map((input, index) => (
-                    <React.Fragment key={index}>
-                      <label htmlFor='email'>{input.name}</label>
-                      <Field type={input.type} name={input.nameInput}
-                             onChange={(e) => {
-                               input[input.nameInput] = e.target.value
-                             }}/>
-                    </React.Fragment>
+                    <FormikInputs key={index} input={input}/>
                   ))}
                 </>
               )}/>
-              <button type="submit" className='btn accent_btn'>{nameSubmitBtn}</button>
+              <Button className='mt-3' type="submit" color='primary'>{nameSubmitBtn}</Button>
             </Form>
           )}
         </Formik>

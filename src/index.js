@@ -9,6 +9,7 @@ import { store } from "./redux/store";
 
 import './index.scss';
 import 'react-toastify/dist/ReactToastify.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBg3MjTG_LFkxmx7086bjzeCM_h9krSU_k",
