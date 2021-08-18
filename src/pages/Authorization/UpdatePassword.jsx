@@ -11,8 +11,6 @@ const useQuery = () => {
 
 const UpdatePassword = () => {
   let query = useQuery()
-  console.log()
-
   return (
     <FormLayout dispatchType={UPDATE_PASSWORD} additionalParam={query.get('oobCode')} name='Обновить пароль' inputs={[{
       name: 'Пароль',
