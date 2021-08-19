@@ -1,16 +1,17 @@
 import React from 'react';
-import { toast, ToastContainer } from "react-toastify";
 
 import { ChatLayout } from "../../components";
+import { Dialog } from "../index";
 
 const Chat = () => {
-  const notify = () => toast('Hello, World!')
+  React.useEffect(() => {
+    const data = JSON.parse(JSON.parse(localStorage.getItem('persist:root')).users)
+  }, [])
 
   return (
     <ChatLayout>
       <h1>Chat</h1>
-      <button onClick={notify}>Notify!</button>
-      <ToastContainer />
+      <Dialog />
     </ChatLayout>
   );
 };

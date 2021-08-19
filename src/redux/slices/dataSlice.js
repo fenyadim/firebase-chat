@@ -10,7 +10,7 @@ const initialState = {
 }
 
 const reducerSuccess = (state, payload, response) => {
-  const {uid, email} = !payload.payload ? payload : payload.payload
+  const {uid, email} = payload
   state.status = 'success'
   state.data = {uid, email}
   state.response = response
@@ -37,7 +37,7 @@ const usersSlice = createSlice({
     },
     SIGN_IN_GOOGLE: reducerRequest,
     SIGN_IN_GOOGLE_SUCCESS: (state, {payload}) => {
-      reducerSuccess(state, {payload}, 'Вы успешно авторизовались через Google!')
+      reducerSuccess(state, payload, 'Вы успешно авторизовались через Google!')
     },
     SIGN_OUT: reducerRequest,
     SIGN_OUT_SUCCESS: (state, {payload}) => {

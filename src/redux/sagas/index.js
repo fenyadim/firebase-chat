@@ -9,6 +9,8 @@ import {
   updatePasswordWatcher,
 } from "./apiSaga";
 
+import { createMessageWatcher, fetchAllWatcher } from "./dialogsSaga";
+
 export default function* rootSaga() {
   yield all([
     signUpWatcher(),
@@ -17,6 +19,8 @@ export default function* rootSaga() {
     forgotWatcher(),
     loggedWatcher(),
     signOutWatcher(),
-    updatePasswordWatcher()
+    updatePasswordWatcher(),
+    createMessageWatcher(),
+    fetchAllWatcher()
   ])
 }
