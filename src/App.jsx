@@ -11,16 +11,9 @@ import { privateRoutes, publicRoutes } from "./routes";
 function App() {
   const {isAuthorized, isLoading} = useSelector((state) => state.users)
   const dispatch = useDispatch()
-  //
-  // firebase.database().ref('/messages/' + 3).set({
-  //   writtenBy: 'client',
-  //   content: "Всем привет, всем привет",
-  //   timestamp: 123123123123
-  // })
 
   React.useEffect(() => {
     dispatch(FETCH_AUTHORIZED_USER())
-    // firebase.database().ref('/messages').once('value').then(r => console.log(r.val()))
   }, [dispatch])
 
   if (isLoading) {
@@ -45,7 +38,7 @@ function App() {
         <Switch>
           {privateRoutes.map(({path, component}, index) => <Route key={index} path={path} component={component}
                                                                   exact/>)}
-          <Redirect to='chat'/>
+          <Redirect to='active-chat'/>
         </Switch>
       )}
     </Layout>

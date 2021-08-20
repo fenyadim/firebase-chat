@@ -4,10 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { UPDATE_PASSWORD } from "../../redux/slices/dataSlice";
 import { FormLayout } from "../../components";
 import { Button, FormGroup } from "reactstrap";
-
-const useQuery = () => {
-  return new URLSearchParams(useLocation().search);
-}
+import { useQuery } from "../../hooks";
 
 const UpdatePassword = () => {
   let query = useQuery()
