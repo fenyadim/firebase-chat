@@ -1,41 +1,31 @@
 import firebase from 'firebase/app'
-import 'firebase/auth'
-import { call, put, take, takeLatest } from "redux-saga/effects";
+import 'firebase/database'
+import { call, fork, put, take, takeLatest } from "redux-saga/effects";
 import {
-  CREATE_MESSAGE,
+  CREATE_MESSAGE, CREATE_MESSAGE_SUCCESS,
   FETCH_ALL_DIALOGS,
   FETCH_ALL_DIALOGS_SUCCESS,
   FETCH_ALL_MESSAGE,
-  FETCH_MESSAGE_SUCCESS
+  FETCH_MESSAGE_SUCCESS,
+  SWITCH_STATUS,
+  SWITCH_STATUS_DIALOG_SUCCESS
 } from "../slices/dialogsSlice";
-import { eventChannel } from "redux-saga";
+import { rsf } from "../../index";
 
-function createMessageEventChannel(ref) {
-  const database = firebase.database()
-  const listener = eventChannel(emit => {
-    database.ref(ref)
-      .on(
-        'child_added',
-        data => emit({data: data.val(), id: data.key})
-      );
-    return () => database.ref(ref).off(listener)
+const dataTransform = ({value}) => {
+  const response = []
+  Object.keys(value).map(index => {
+    response.push(value[index])
   })
-  return listener
+  return response
 }
-
-function createData(ref, data) {
-  const database = firebase.database()
-  database.ref(ref).push(data)
-}
-
 
 function* createMessageWorker(action) {
   try {
     const {id, content} = action.payload
-    const data = {
+    yield call(rsf.database.create, `/messages/${id}`, {
       content
-    }
-    yield call(createData, `${id}/messages`, data)
+    })
   } catch (e) {
     console.log(e)
   }
@@ -44,11 +34,14 @@ function* createMessageWorker(action) {
 function* fetchAllMessage(action) {
   try {
     const {payload} = action
-    const updateChannel = createMessageEventChannel(`${payload}/messages`)
-    while (true) {
-      const {data} = yield take(updateChannel)
-      yield put(FETCH_MESSAGE_SUCCESS({data, idDialog: payload}))
-    }
+    yield fork(
+      rsf.database.sync,
+      `/messages/${payload}`,
+      {
+        successActionCreator: FETCH_MESSAGE_SUCCESS,
+        transform: dataTransform
+      }
+    )
   } catch (e) {
     console.log(e)
   }
@@ -56,11 +49,31 @@ function* fetchAllMessage(action) {
 
 function* fetchAllDialogs() {
   try {
-    const updateChannel = createMessageEventChannel('/')
+    const channel = yield call(rsf.database.channel, '/dialogs');
+    const response = []
     while (true) {
-      const item = yield take(updateChannel)
-      yield put(FETCH_ALL_DIALOGS_SUCCESS(item))
+      const {value: dialogs} = yield take(channel)
+      Object.keys(dialogs).map(item => {
+        response.push({
+          ...dialogs[item],
+          dialogId: item
+        })
+      })
+      yield put(FETCH_ALL_DIALOGS_SUCCESS(response))
     }
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+function* switchStatusDialog(action) {
+  try {
+    const {payload} = action
+    const ref = firebase.database().ref('/dialogs/' + payload + '/isSaved')
+    const savedField = yield call([ref, ref.once], 'value')
+    const isSaved = savedField.val()
+    yield call([ref, ref.set], !isSaved)
+    yield put(SWITCH_STATUS_DIALOG_SUCCESS({ref: payload, isSaved: !isSaved}))
   } catch (e) {
     console.log(e)
   }
@@ -76,4 +89,8 @@ export function* fetchAllWatcher() {
 
 export function* fetchAllDialogsWatcher() {
   yield takeLatest(FETCH_ALL_DIALOGS.type, fetchAllDialogs)
+}
+
+export function* switchStatusDialogWatcher() {
+  yield takeLatest(SWITCH_STATUS.type, switchStatusDialog)
 }

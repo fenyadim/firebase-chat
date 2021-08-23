@@ -7,11 +7,16 @@ import { Layout } from "../index";
 import { SIGN_OUT } from "../../redux/slices/dataSlice";
 
 import styles from './ChatLayout.module.scss'
+import { FETCH_ALL_DIALOGS } from "../../redux/slices/dialogsSlice";
 
 const ChatLayout = ({children}) => {
   const {data} = useSelector(state => state.users)
   const {email} = data
   const dispatch = useDispatch()
+
+  React.useEffect(() => {
+    dispatch(FETCH_ALL_DIALOGS())
+  }, [dispatch])
 
   return (
     <Container>

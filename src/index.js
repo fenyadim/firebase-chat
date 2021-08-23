@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
+import LogRocket from 'logrocket';
 
 import App from './App';
 import { store } from "./redux/store";
@@ -13,6 +14,7 @@ import { store } from "./redux/store";
 import './index.scss';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import ReduxSagaFirebase from "redux-saga-firebase";
 
 
 const firebaseConfig = {
@@ -26,7 +28,11 @@ const firebaseConfig = {
   measurementId: "G-N4DJJS4R33"
 }
 
-firebase.initializeApp(firebaseConfig)
+const firebaseApp = firebase.initializeApp(firebaseConfig)
+
+export const rsf = new ReduxSagaFirebase(firebaseApp)
+
+LogRocket.init('cvecyh/firebase-chat');
 
 let persistor = persistStore(store)
 

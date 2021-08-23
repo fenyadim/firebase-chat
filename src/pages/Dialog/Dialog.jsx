@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Container, Form, Input, Row } from "reactstrap";
+import { Button, Form, Input } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 
@@ -10,10 +10,10 @@ import { useQuery } from "../../hooks";
 
 const Dialog = () => {
   const state = useSelector(state => state.dialogs)
+  const messages = state?.currentDialogMessages?.messages
   const dispatch = useDispatch()
   const query = useQuery()
   const ref = query.get('id')
-  const currentElem = state[ref].messages
 
   const formik = useFormik({
     initialValues: {
@@ -26,24 +26,24 @@ const Dialog = () => {
 
   React.useEffect(() => {
     dispatch(FETCH_ALL_MESSAGE(ref))
-  }, [])
-
+  }, [dispatch])
 
   return (
     <ChatLayout>
-      <Container>
-        <Row className='overflow-auto' style={{height: 300}}>
-          {Object.keys(currentElem).map(idDialog => (
-            <p>{currentElem[idDialog].content}</p>
+      <div className='border p-3 rounded'>
+        <div className='overflow-auto border w-100 d-block mb-3 p-3 rounded' style={{height: 300}}>
+          {messages && messages.map((item, index) => (
+            <p key={index}>{item.content}</p>
           ))}
-        </Row>
-        <Row>
+        </div>
+        <div>
           <Form onSubmit={formik.handleSubmit}>
-            <Input type='text' name='message' onChange={formik.handleChange} value={formik.values.message}/>
+            <Input className='mb-3' type='text' name='message' onChange={formik.handleChange}
+                   value={formik.values.message} placeholder='Введите сообщение'/>
             <Button type='submit'>Отправить</Button>
           </Form>
-        </Row>
-      </Container>
+        </div>
+      </div>
     </ChatLayout>
   );
 };
