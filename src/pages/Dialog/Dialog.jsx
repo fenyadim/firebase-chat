@@ -19,8 +19,9 @@ const Dialog = () => {
     initialValues: {
       message: ''
     },
-    onSubmit: values => {
+    onSubmit: (values, {resetForm}) => {
       dispatch(CREATE_MESSAGE({content: values.message, id: ref}))
+      resetForm({message: ''})
     }
   })
 
