@@ -1,11 +1,10 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
-import { Row, Spinner } from "reactstrap";
 import 'firebase/database'
 
 import { FETCH_AUTHORIZED_USER } from "./redux/slices/dataSlice";
-import { Layout } from "./components";
+import { Layout, Loader } from "./components";
 import { privateRoutes, publicRoutes } from "./routes";
 
 function App() {
@@ -19,10 +18,7 @@ function App() {
   if (isLoading) {
     return (
       <Layout>
-        <Row className='d-flex align-items-center justify-content-center vh-100'>
-          <Spinner color='primary'
-                   style={{width: '3rem', height: '3rem'}}/>
-        </Row>
+        <Loader/>
       </Layout>
     )
   }

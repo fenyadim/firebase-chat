@@ -7,6 +7,8 @@ import { BrowserRouter } from "react-router-dom";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
 import LogRocket from 'logrocket';
+import moment from "moment";
+import 'moment/locale/ru'
 
 import App from './App';
 import { store } from "./redux/store";
@@ -35,6 +37,8 @@ export const rsf = new ReduxSagaFirebase(firebaseApp)
 LogRocket.init('cvecyh/firebase-chat');
 
 let persistor = persistStore(store)
+
+moment.locale('ru')
 
 ReactDOM.render(
   <Provider store={store}>

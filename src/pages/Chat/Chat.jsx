@@ -2,15 +2,17 @@ import React from 'react';
 import { Button, Form, Input } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
+import moment from "moment";
 
 import { CREATE_MESSAGE, FETCH_ALL_MESSAGE } from "../../redux/slices/dialogsSlice";
-import { ChatLayout } from "../../components";
+import { ChatLayout, Loader } from "../../components";
 import { useQuery } from "../../hooks";
 
 
-const Dialog = () => {
+const Chat = () => {
   const state = useSelector(state => state.dialogs)
   const messages = state?.currentDialogMessages?.messages
+  const isLoading = state?.currentDialogMessages?.isLoading
   const dispatch = useDispatch()
   const query = useQuery()
   const ref = query.get('id')
@@ -29,13 +31,18 @@ const Dialog = () => {
     dispatch(FETCH_ALL_MESSAGE(ref))
   }, [dispatch])
 
+  const diff = moment('24 авг. 21, 11:07', 'D MMM YY, HH:mm').fromNow()
+
   return (
     <ChatLayout>
       <div className='border p-3 rounded'>
         <div className='overflow-auto border w-100 d-block mb-3 p-3 rounded' style={{height: 300}}>
-          {messages && messages.map((item, index) => (
-            <p key={index}>{item.content}</p>
-          ))}
+          {!isLoading ? messages && messages.map((item, index) => (
+            <div className='ms-auto border rounded p-2 mb-3 w-50' key={index}>
+              <p key={index}>{item.content}</p>
+              <span className='text-secondary' style={{fontSize: 11}}>{item.timestamp}</span>
+            </div>
+          )) : <Loader/>}
         </div>
         <div>
           <Form onSubmit={formik.handleSubmit}>
@@ -49,4 +56,4 @@ const Dialog = () => {
   );
 };
 
-export default Dialog;
+export default Chat;

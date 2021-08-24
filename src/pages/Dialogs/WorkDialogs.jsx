@@ -1,12 +1,13 @@
 import React from 'react';
+
 import { ChatLayout } from "../../components";
 
-const CompletedChat = () => {
+const WorkDialogs = () => {
   return (
     <ChatLayout>
-      <h1>CompletedChat</h1>
+      <h1>WorkChat</h1>
     </ChatLayout>
   );
 };
 
-export default CompletedChat;
+export default WorkDialogs;

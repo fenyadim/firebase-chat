@@ -1,13 +1,11 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Col, Container, Row } from "reactstrap";
+import { Col, Container, Input, Row } from "reactstrap";
+import debounce from "lodash.debounce";
 
-import { Layout } from "../index";
 import { SIGN_OUT } from "../../redux/slices/dataSlice";
-
-import styles from './ChatLayout.module.scss'
-import { FETCH_ALL_DIALOGS } from "../../redux/slices/dialogsSlice";
+import { FETCH_ALL_DIALOGS, SEARCH_DATA } from "../../redux/slices/dialogsSlice";
 
 const ChatLayout = ({children}) => {
   const {data} = useSelector(state => state.users)
@@ -17,6 +15,14 @@ const ChatLayout = ({children}) => {
   React.useEffect(() => {
     dispatch(FETCH_ALL_DIALOGS())
   }, [dispatch])
+
+  const changeHandler = (e) => {
+    dispatch(SEARCH_DATA(e.target.value))
+  }
+
+  const debouncedChangeHandler = React.useCallback(
+    debounce(changeHandler, 250)
+  )
 
   return (
     <Container>
@@ -33,10 +39,11 @@ const ChatLayout = ({children}) => {
           </Link>
         </Col>
         <Col>
-          <div className={styles.header}>
-            <h3>{email}</h3>
+          <div className='d-flex justify-content-end'>
+            <h3 className='me-3'>{email}</h3>
             <button onClick={() => dispatch(SIGN_OUT())}>Выход</button>
           </div>
+          <Input type='search' name='Поиск' placeholder='Поиск' onChange={debouncedChangeHandler}/>
           {children}
         </Col>
       </Row>

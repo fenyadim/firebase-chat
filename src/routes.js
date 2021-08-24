@@ -1,13 +1,13 @@
 import {
-  ActiveChat,
-  CompletedChat,
-  Dialog,
+  ActiveDialogs,
+  Chat,
+  CompletedDialogs,
   ForgotPassword,
   Login,
   Registration,
-  SavedChat,
+  SavedDialogs,
   UpdatePassword,
-  WorkChat
+  WorkDialogs,
 } from './pages/'
 
 export const publicRoutes = [
@@ -18,9 +18,9 @@ export const publicRoutes = [
 ]
 
 export const privateRoutes = [
-  {path: '/active-chat', component: ActiveChat},
-  {path: '/work-chat', component: WorkChat},
-  {path: '/saved-chat', component: SavedChat},
-  {path: '/completed-chat', component: CompletedChat},
-  {path: '/dialog', component: Dialog}
+  {path: '/active-chat', component: ActiveDialogs},
+  {path: '/work-chat', component: WorkDialogs},
+  {path: '/saved-chat', component: SavedDialogs},
+  {path: '/completed-chat', component: CompletedDialogs},
+  {path: '/dialog', component: Chat}
 ]
