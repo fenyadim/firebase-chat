@@ -34,7 +34,7 @@ function App() {
         <Switch>
           {privateRoutes.map(({path, component}, index) => <Route key={index} path={path} component={component}
                                                                   exact/>)}
-          <Redirect to='active-chat'/>
+          <Redirect to='active-dialogs'/>
         </Switch>
       )}
     </Layout>

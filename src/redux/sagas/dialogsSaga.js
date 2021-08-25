@@ -1,38 +1,46 @@
 import firebase from 'firebase/app'
 import 'firebase/database'
-import { call, cancel, fork, put, take, takeLatest } from "redux-saga/effects";
+import 'firebase/auth'
+import { all, call, cancel, fork, put, take, takeLatest } from "redux-saga/effects";
+import moment from "moment";
 
 import {
   CREATE_MESSAGE,
+  DIALOGS_FAILED,
   FETCH_ALL_DIALOGS,
   FETCH_ALL_DIALOGS_SUCCESS,
   FETCH_ALL_MESSAGE,
   FETCH_ALL_MESSAGE_SUCCESS,
+  SAVE_DIALOG,
   SEARCH_DATA,
+  SEARCH_DATA_SUCCESS,
   SWITCH_STATUS,
   SWITCH_STATUS_DIALOG_SUCCESS
 } from "../slices/dialogsSlice";
 import { rsf } from "../../index";
-import moment from "moment";
+import { onAuthStateChanged } from "./authSaga";
 
 const messageTransformData = ({value}) => {
   const response = []
-  Object.keys(value).map(index => {
-    response.push(value[index])
-  })
-  return response
+  if (value) {
+    Object.keys(value).map(index => {
+      response.push(value[index])
+    })
+    return response
+  }
 }
 
-const dialogTransformData = ({value}, lastTime) => {
+const dialogTransformData = ({value}) => {
   const response = []
-  Object.keys(value).map(index => {
-    response.push({
-      ...value[index],
-      dialogId: index,
-      lastTime: lastTime[index]
+  if (value) {
+    Object.keys(value).map(index => {
+      response.push({
+        ...value[index],
+        dialogId: index,
+      })
     })
-  })
-  return response
+    return response
+  }
 }
 
 // Workers
@@ -57,7 +65,8 @@ function* fetchAllMessage(action) {
       `/messages/${payload}`,
       {
         successActionCreator: FETCH_ALL_MESSAGE_SUCCESS,
-        transform: messageTransformData
+        transform: messageTransformData,
+        failureActionCreator: DIALOGS_FAILED
       }
     )
     yield take(FETCH_ALL_MESSAGE)
@@ -68,40 +77,46 @@ function* fetchAllMessage(action) {
 }
 
 function* lastTimeMessage() {
-  const ref = firebase.database().ref('messages')
-  const response = yield call([ref, ref.get])
-  const obj = response.val()
-  let lastTimeDialogs = {}
-  Object.keys(obj).map(index => {
-    const lenght = Object.keys(obj[index]).length
-    const key = Object.keys(obj[index])[lenght - 1]
-    lastTimeDialogs = {
-      ...lastTimeDialogs,
-      [index]: obj[index][key].timestamp
-    }
-  })
-  return lastTimeDialogs
+  try {
+    const obj = yield call(rsf.database.read, 'messages')
+    yield all(Object.keys(obj).map(index => {
+      const length = Object.keys(obj[index]).length
+      const key = Object.keys(obj[index])[length - 1]
+      return call(rsf.database.update, `/dialogs/${index}/lastTime`, obj[index][key].timestamp)
+    }))
+  } catch (e) {
+    console.log(e)
+  }
 }
 
-function* fetchAllDialogs() {
+function* fetchAllDialogs(action) {
   try {
-    const lastTime = yield call(lastTimeMessage)
+    let status = action.payload
+    if (!status) {
+      status = 'active'
+    }
+    yield call(lastTimeMessage)
+    const {uid} = yield call(onAuthStateChanged)
+    const child = status === 'queue' ? 'status' : 'operatorId_status'
+    const equalItem = status === 'queue' ? status : `${uid}_${status}`
     const syncData = yield fork(
       rsf.database.sync,
-      '/dialogs',
+      firebase.database().ref('dialogs').orderByChild(child).equalTo(equalItem),
       {
         successActionCreator: FETCH_ALL_DIALOGS_SUCCESS,
-        transform: value => dialogTransformData(value, lastTime)
+        transform: value => dialogTransformData(value),
+        failureActionCreator: DIALOGS_FAILED
       }
     )
     yield take(FETCH_ALL_DIALOGS)
+    yield take(FETCH_ALL_MESSAGE)
     yield cancel(syncData)
   } catch (e) {
     console.log(e)
   }
 }
 
-function* switchStatusDialog(action) {
+function* saveDialog(action) {
   try {
     const {payload} = action
     const ref = firebase.database().ref('/dialogs/' + payload + '/isSaved')
@@ -114,15 +129,35 @@ function* switchStatusDialog(action) {
   }
 }
 
+function* switchStatusDialog(action) {
+  try {
+    const {dialogId, status, operatorId} = action.payload
+    yield call(
+      rsf.database.update,
+      `/dialogs/${dialogId}/status`,
+      status)
+    yield call(
+      rsf.database.update,
+      `/dialogs/${dialogId}/operatorId`,
+      operatorId
+    )
+    yield call(rsf.database.update,
+      `/dialogs/${dialogId}/operatorId_status`,
+      `${operatorId}_${status}`
+    )
+  } catch (e) {
+    console.log(e)
+  }
+}
+
 function* searchData(action) {
   try {
     const {payload} = action
-    console.log(payload)
-    const test = yield call(
+    const findData = yield call(
       rsf.database.read,
-      firebase.database().ref('dialogs').orderByChild('clientName').startAt(payload)
+      firebase.database().ref('dialogs').orderByChild('clientName').startAt(payload.toUpperCase()).endAt(payload.toLowerCase() + "\uf8ff")
     )
-    console.log(test)
+    yield put(SEARCH_DATA_SUCCESS(findData))
   } catch (e) {
     console.log(e)
   }
@@ -139,6 +174,10 @@ export function* fetchAllMessageWatcher() {
 
 export function* fetchAllDialogsWatcher() {
   yield takeLatest(FETCH_ALL_DIALOGS.type, fetchAllDialogs)
+}
+
+export function* saveDialogWatcher() {
+  yield takeLatest(SAVE_DIALOG.type, saveDialog)
 }
 
 export function* switchStatusDialogWatcher() {

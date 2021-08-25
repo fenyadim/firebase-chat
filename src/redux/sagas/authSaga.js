@@ -21,7 +21,7 @@ import {
   UPDATE_PASSWORD_SUCCESS
 } from "../slices/dataSlice";
 
-const onAuthStateChanged = () => {
+export const onAuthStateChanged = () => {
   return new Promise((resolve, reject) => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {

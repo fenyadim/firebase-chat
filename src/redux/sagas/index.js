@@ -13,8 +13,9 @@ import {
   createMessageWatcher,
   fetchAllDialogsWatcher,
   fetchAllMessageWatcher,
-  switchStatusDialogWatcher,
-  searchDataWatcher
+  saveDialogWatcher,
+  searchDataWatcher,
+  switchStatusDialogWatcher
 } from "./dialogsSaga";
 
 export default function* rootSaga() {
@@ -29,7 +30,8 @@ export default function* rootSaga() {
     createMessageWatcher(),
     fetchAllMessageWatcher(),
     fetchAllDialogsWatcher(),
-    switchStatusDialogWatcher(),
-    searchDataWatcher()
+    saveDialogWatcher(),
+    searchDataWatcher(),
+    switchStatusDialogWatcher()
   ])
 }

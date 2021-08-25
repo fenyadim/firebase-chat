@@ -2,10 +2,9 @@ import React from 'react';
 import { Button, Form, Input } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
-import moment from "moment";
 
 import { CREATE_MESSAGE, FETCH_ALL_MESSAGE } from "../../redux/slices/dialogsSlice";
-import { ChatLayout, Loader } from "../../components";
+import { DialogsLayout, Loader } from "../../components";
 import { useQuery } from "../../hooks";
 
 
@@ -31,18 +30,16 @@ const Chat = () => {
     dispatch(FETCH_ALL_MESSAGE(ref))
   }, [dispatch])
 
-  const diff = moment('24 авг. 21, 11:07', 'D MMM YY, HH:mm').fromNow()
-
   return (
-    <ChatLayout>
+    <DialogsLayout>
       <div className='border p-3 rounded'>
         <div className='overflow-auto border w-100 d-block mb-3 p-3 rounded' style={{height: 300}}>
-          {!isLoading ? messages && messages.map((item, index) => (
+          {!isLoading ? (messages ? messages.map((item, index) => (
             <div className='ms-auto border rounded p-2 mb-3 w-50' key={index}>
               <p key={index}>{item.content}</p>
               <span className='text-secondary' style={{fontSize: 11}}>{item.timestamp}</span>
             </div>
-          )) : <Loader/>}
+          )) : <p>Сообщений нет</p>) : <Loader/>}
         </div>
         <div>
           <Form onSubmit={formik.handleSubmit}>
@@ -52,7 +49,7 @@ const Chat = () => {
           </Form>
         </div>
       </div>
-    </ChatLayout>
+    </DialogsLayout>
   );
 };
 

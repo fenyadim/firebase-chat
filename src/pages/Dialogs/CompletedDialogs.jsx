@@ -1,11 +1,9 @@
 import React from 'react';
-import { ChatLayout } from "../../components";
+import { DialogsWrapper } from "../../components";
 
 const CompletedDialogs = () => {
   return (
-    <ChatLayout>
-      <h1>CompletedChat</h1>
-    </ChatLayout>
+    <DialogsWrapper name='Завершенные' status='completed'/>
   );
 };
 

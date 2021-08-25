@@ -1,7 +1,8 @@
 export {default as ActiveDialogs} from './Dialogs/ActiveDialogs'
-export {default as WorkDialogs} from './Dialogs/WorkDialogs'
+export {default as QueueDialogs} from './Dialogs/QueueDialogs'
 export {default as SavedDialogs} from './Dialogs/SavedDialogs'
 export {default as CompletedDialogs} from './Dialogs/CompletedDialogs'
+
 export {default as Chat} from './Chat/Chat'
 export {default as ChatCard} from './Chat/ChatCard'
 
