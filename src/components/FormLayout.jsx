@@ -4,9 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button, Col, Form, FormGroup, Input, Label } from "reactstrap";
 import * as Yup from 'yup'
 
-import styles from "./FormLayout.module.scss";
-
-
 const FormikInputs = ({input}) => {
   return (
     <FormGroup>
@@ -87,7 +84,7 @@ const FromLayout = ({children, dispatchType, name, inputs, nameSubmitBtn, additi
 
   return (
     <Col className='vh-100 d-flex justify-content-center align-items-center'>
-      <div className={styles.authWrapper}>
+      <div className='border rounded overflow-hidden' style={{width: 400}}>
         <div className='bg-primary col p-3 mb-1'>
           <h1 className='fs-2 text-light text-center'>{name}</h1>
         </div>

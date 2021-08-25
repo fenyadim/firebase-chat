@@ -14,8 +14,7 @@ import {
   SAVE_DIALOG,
   SEARCH_DATA,
   SEARCH_DATA_SUCCESS,
-  SWITCH_STATUS,
-  SWITCH_STATUS_DIALOG_SUCCESS
+  SWITCH_STATUS
 } from "../slices/dialogsSlice";
 import { rsf } from "../../index";
 import { onAuthStateChanged } from "./authSaga";
@@ -123,7 +122,6 @@ function* saveDialog(action) {
     const savedField = yield call([ref, ref.once], 'value')
     const isSaved = savedField.val()
     yield call([ref, ref.set], !isSaved)
-    yield put(SWITCH_STATUS_DIALOG_SUCCESS({ref: payload, isSaved: !isSaved}))
   } catch (e) {
     console.log(e)
   }

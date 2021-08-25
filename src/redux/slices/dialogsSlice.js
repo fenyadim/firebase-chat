@@ -36,14 +36,6 @@ const dialogsSlice = createSlice({
       state.dialogs = payload
       state.isLoading = false
     },
-    SWITCH_STATUS_DIALOG_SUCCESS: (state, {payload}) => {
-      const {ref, isSaved} = payload
-      state.dialogs.map(item => {
-        if (item.dialogId === ref) {
-          item.isSaved = isSaved
-        }
-      })
-    },
     SEARCH_DATA_SUCCESS: (state, action) => {
       console.log(action)
     },
@@ -58,7 +50,6 @@ export const {
   FETCH_ALL_DIALOGS,
   FETCH_ALL_MESSAGE_SUCCESS,
   FETCH_ALL_DIALOGS_SUCCESS,
-  SWITCH_STATUS_DIALOG_SUCCESS,
   SEARCH_DATA_SUCCESS,
   DIALOGS_FAILED
 } = dialogsSlice.actions

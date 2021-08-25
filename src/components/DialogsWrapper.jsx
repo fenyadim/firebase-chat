@@ -1,8 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from "react-redux";
 
-import { ChatCard } from "../pages";
-import { DialogsLayout, Loader } from "./index";
+import { ChatCard, DialogsLayout, Loader } from "./index";
 import { FETCH_ALL_DIALOGS } from "../redux/slices/dialogsSlice";
 
 // TODO: Подключить бесконечный скролл!!!

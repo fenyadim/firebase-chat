@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { SAVE_DIALOG, SWITCH_STATUS } from "../../redux/slices/dialogsSlice";
+import { SAVE_DIALOG, SWITCH_STATUS } from "../redux/slices/dialogsSlice";
 import moment from "moment";
 
 const ChatCard = ({topic, dialogId, isSaved, lastTime, status}) => {
