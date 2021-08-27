@@ -43,7 +43,7 @@ const dialogTransformData = ({value}) => {
 }
 
 // Workers
-function* createMessageWorker(action) {
+function* createMessage(action) {
   try {
     const {id, content} = action.payload
     const date = moment().format('D MMM YY, HH:mm')
@@ -163,7 +163,7 @@ function* searchData(action) {
 
 // Watchers
 export function* createMessageWatcher() {
-  yield takeLatest(CREATE_MESSAGE.type, createMessageWorker)
+  yield takeLatest(CREATE_MESSAGE.type, createMessage)
 }
 
 export function* fetchAllMessageWatcher() {
