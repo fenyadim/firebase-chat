@@ -36,8 +36,8 @@ const dialogsSlice = createSlice({
       state.dialogs = payload
       state.isLoading = false
     },
-    SEARCH_DATA_SUCCESS: (state, action) => {
-      console.log(action)
+    SEARCH_DATA_SUCCESS: (state, {payload}) => {
+      console.log(payload)
     },
     DIALOGS_FAILED: (state, {payload}) => {
       console.log(payload)
