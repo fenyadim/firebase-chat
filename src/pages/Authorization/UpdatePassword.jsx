@@ -1,9 +1,9 @@
 import React from 'react';
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { Button, FormGroup } from "reactstrap";
 
 import { UPDATE_PASSWORD } from "../../redux/slices/dataSlice";
 import { FormLayout } from "../../components";
-import { Button, FormGroup } from "reactstrap";
 import { useQuery } from "../../hooks";
 
 const UpdatePassword = () => {
