@@ -1,8 +1,9 @@
+export {default as ActiveDialogs} from './Dialogs/ActiveDialogs'
+export {default as QueueDialogs} from './Dialogs/QueueDialogs'
+export {default as SavedDialogs} from './Dialogs/SavedDialogs'
+export {default as CompletedDialogs} from './Dialogs/CompletedDialogs'
+
 export {default as Chat} from './Chat/Chat'
-export {default as ActiveChat} from './ActiveChat/ActiveChat'
-export {default as WorkChat} from './WorkChat/WorkChat'
-export {default as SavedChat} from './SavedChat/SavedChat'
-export {default as CompletedChat} from './CompletedChat/CompletedChat'
 
 export {default as Login} from './Authorization/Login'
 export {default as Registration} from './Authorization/Registration'

@@ -1,16 +1,14 @@
 import React from 'react';
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { Button, FormGroup } from "reactstrap";
 
 import { UPDATE_PASSWORD } from "../../redux/slices/dataSlice";
 import { FormLayout } from "../../components";
-import { Button, FormGroup } from "reactstrap";
-
-const useQuery = () => {
-  return new URLSearchParams(useLocation().search);
-}
+import { useQuery } from "../../hooks";
 
 const UpdatePassword = () => {
   let query = useQuery()
+
   return (
     <FormLayout dispatchType={UPDATE_PASSWORD} additionalParam={query.get('oobCode')} name='Обновить пароль' inputs={[{
       name: 'Пароль',

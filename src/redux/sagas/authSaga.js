@@ -1,4 +1,6 @@
-import firebase from 'firebase'
+import firebase from 'firebase/app'
+import 'firebase/auth'
+
 import { call, put, takeLatest } from 'redux-saga/effects'
 
 import {
@@ -19,7 +21,7 @@ import {
   UPDATE_PASSWORD_SUCCESS
 } from "../slices/dataSlice";
 
-const onAuthStateChanged = () => {
+export const onAuthStateChanged = () => {
   return new Promise((resolve, reject) => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
@@ -33,7 +35,7 @@ const onAuthStateChanged = () => {
 }
 
 // Workers
-export function* signUpWorker(action) {
+function* signUpWorker(action) {
   const {email, password} = action.payload
   try {
     const auth = firebase.auth()
@@ -44,7 +46,7 @@ export function* signUpWorker(action) {
   }
 }
 
-export function* signInGoogleWorker() {
+function* signInGoogleWorker() {
   const provider = new firebase.auth.GoogleAuthProvider()
   try {
     const auth = firebase.auth()
@@ -55,7 +57,7 @@ export function* signInGoogleWorker() {
   }
 }
 
-export function* forgotWorker(action) {
+function* forgotWorker(action) {
   try {
     const {email} = action.payload
     const actionCodeSettings = {
@@ -69,7 +71,7 @@ export function* forgotWorker(action) {
   }
 }
 
-export function* signInWorker(action) {
+function* signInWorker(action) {
   const {email, password} = action.payload
   try {
     const auth = firebase.auth()
@@ -80,7 +82,7 @@ export function* signInWorker(action) {
   }
 }
 
-export function* loggedWorker() {
+function* loggedWorker() {
   try {
     const response = yield call(onAuthStateChanged)
     yield put(FETCH_AUTHORIZED_USER_SUCCESS(response))
@@ -89,7 +91,7 @@ export function* loggedWorker() {
   }
 }
 
-export function* signOutWorker() {
+function* signOutWorker() {
   try {
     const auth = firebase.auth()
     yield call([auth, auth.signOut])
@@ -99,7 +101,7 @@ export function* signOutWorker() {
   }
 }
 
-export function* updatePasswordWorker(action) {
+function* updatePasswordWorker(action) {
   try {
     const {password, additional} = action.payload
     const auth = firebase.auth()
