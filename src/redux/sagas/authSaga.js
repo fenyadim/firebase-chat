@@ -18,15 +18,18 @@ import {
   SIGN_UP,
   SIGN_UP_SUCCESS,
   UPDATE_PASSWORD,
-  UPDATE_PASSWORD_SUCCESS
+  UPDATE_PASSWORD_SUCCESS,
+  UPDATE_USER,
+  UPDATE_USER_SUCCESS
 } from "../slices/dataSlice";
+import { rsf } from "../../index";
 
 export const onAuthStateChanged = () => {
   return new Promise((resolve, reject) => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        const {uid, email} = user
-        resolve({uid, email})
+        const {uid, email, displayName} = user
+        resolve({uid, email, displayName})
       } else {
         reject({message: 'Нет авторизированного пользователя!'})
       }
@@ -114,6 +117,19 @@ function* updatePasswordWorker(action) {
   }
 }
 
+function* updateUser(action) {
+  try {
+    const {displayName, email, password} = action.payload
+    yield call(rsf.auth.signInWithEmailAndPassword, email, password)
+    yield call(rsf.auth.updateProfile, {
+      displayName
+    })
+    yield put(UPDATE_USER_SUCCESS(displayName))
+  } catch (e) {
+    yield put(AUTHENTICATION_FAILED('Не удалось обновить профиль. Неправильный пароль'))
+  }
+}
+
 
 // Watchers
 export function* signUpWatcher() {
@@ -142,4 +158,8 @@ export function* signOutWatcher() {
 
 export function* updatePasswordWatcher() {
   yield takeLatest(UPDATE_PASSWORD.type, updatePasswordWorker)
+}
+
+export function* updateUserWatcher() {
+  yield takeLatest(UPDATE_USER.type, updateUser)
 }

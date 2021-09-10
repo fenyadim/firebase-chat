@@ -28,6 +28,12 @@ const schema = Yup.object().shape({
             .email('Неправильный email')
             .required('Введите email')
         }),
+      displayName: Yup.string()
+        .when('nameInput', {
+          is: 'displayName',
+          then: Yup.string()
+            .required('Введите имя')
+        }),
       password: Yup.string()
         .when('nameInput', {
           is: 'password',
@@ -66,7 +72,7 @@ const FromLayout = ({children, dispatchType, name, inputs, nameSubmitBtn, additi
   const {status, response} = useSelector(state => state.users)
   const dispatch = useDispatch()
 
-  const dispatchPayload = (email, password, additional) => {
+  const dispatchPayload = (email, password, additional, displayName) => {
     let objToPass = {}
     if (email === undefined) {
       objToPass.password = password
@@ -75,6 +81,9 @@ const FromLayout = ({children, dispatchType, name, inputs, nameSubmitBtn, additi
     } else {
       objToPass.email = email
       objToPass.password = password
+    }
+    if (displayName) {
+      objToPass.displayName = displayName
     }
     if (additional) {
       objToPass.additional = additional
@@ -85,9 +94,10 @@ const FromLayout = ({children, dispatchType, name, inputs, nameSubmitBtn, additi
   return (
     <Col className='vh-100 d-flex justify-content-center align-items-center'>
       <div className='border rounded overflow-hidden' style={{width: 400}}>
+        {name &&
         <div className='bg-primary col p-3 mb-1'>
           <h1 className='fs-2 text-light text-center'>{name}</h1>
-        </div>
+        </div>}
         <Formik
           initialValues={{inputs}}
           validationSchema={schema}

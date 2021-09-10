@@ -11,7 +11,7 @@ const Layout = ({children}) => {
       <Container className='vh-100' fluid='xl'>
         {children}
       </Container>
-      {status === 'success' && <ToastContainer/>}
+      {status === 'success' || status === 'error' && <ToastContainer/>}
     </>
   )
 }

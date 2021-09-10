@@ -10,9 +10,9 @@ const initialState = {
 }
 
 const reducerSuccess = (state, payload, response) => {
-  const {uid, email} = payload
+  const {uid, email, displayName} = payload
   state.status = 'success'
-  state.data = {uid, email}
+  state.data = {uid, email, displayName}
   state.response = response
   state.isAuthorized = true
   state.isLoading = false
@@ -40,7 +40,7 @@ const usersSlice = createSlice({
       reducerSuccess(state, payload, 'Вы успешно авторизовались через Google!')
     },
     SIGN_OUT: reducerRequest,
-    SIGN_OUT_SUCCESS: (state, {payload}) => {
+    SIGN_OUT_SUCCESS: (state) => {
       state.status = 'success'
       state.response = 'Вы успешно вышли!'
       state.isAuthorized = false
@@ -56,6 +56,15 @@ const usersSlice = createSlice({
     UPDATE_PASSWORD_SUCCESS: (state, {payload}) => {
       reducerSuccess(state, {payload}, 'Вы успешно сменили пароль!')
     },
+    UPDATE_USER: reducerRequest,
+    UPDATE_USER_SUCCESS: (state, {payload}) => {
+      state.data = {
+        ...state.data,
+        displayName: payload
+      }
+      state.isLoading = false
+      toast.success('Профиль успешно обновлен!')
+    },
     FETCH_AUTHORIZED_USER: reducerRequest,
     FETCH_AUTHORIZED_USER_SUCCESS: (state, {payload}) => {
       reducerSuccess(state, payload)
@@ -64,6 +73,7 @@ const usersSlice = createSlice({
       state.status = 'error'
       state.isLoading = false
       state.response = payload
+      toast.error(payload)
     }
   },
 })
@@ -79,6 +89,8 @@ export const {
   FORGOT_SUCCESS,
   UPDATE_PASSWORD,
   UPDATE_PASSWORD_SUCCESS,
+  UPDATE_USER,
+  UPDATE_USER_SUCCESS,
   FETCH_AUTHORIZED_USER_SUCCESS,
   AUTHENTICATION_FAILED,
   SIGN_OUT,
