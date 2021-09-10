@@ -6,6 +6,7 @@ import { useFormik } from "formik";
 import { CREATE_MESSAGE, FETCH_ALL_MESSAGE } from "../../redux/slices/dialogsSlice";
 import { DialogsLayout, Loader } from "../../components";
 import { useQuery } from "../../hooks";
+import moment from "moment";
 
 
 const Chat = () => {
@@ -37,7 +38,8 @@ const Chat = () => {
           {!isLoading ? (messages ? messages.map((item, index) => (
             <div className='ms-auto border rounded p-2 mb-3 w-50' key={index}>
               <p key={index}>{item.content}</p>
-              <span className='text-secondary' style={{fontSize: 11}}>{item.timestamp}</span>
+              <span className='text-secondary'
+                    style={{fontSize: 11}}>{moment(item.timestamp, 'D MMM YY, HH:mm').fromNow()}</span>
             </div>
           )) : <p>Сообщений нет</p>) : <Loader/>}
         </div>

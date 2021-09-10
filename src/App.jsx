@@ -1,7 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
-import 'firebase/database'
 
 import { FETCH_AUTHORIZED_USER } from "./redux/slices/dataSlice";
 import { Layout, Loader } from "./components";
