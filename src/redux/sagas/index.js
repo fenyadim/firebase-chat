@@ -14,6 +14,7 @@ import {
   createMessageWatcher,
   fetchAllDialogsWatcher,
   fetchAllMessageWatcher,
+  fetchCurrentDialogWatcher,
   saveDialogWatcher,
   searchDataWatcher,
   switchStatusDialogWatcher
@@ -31,6 +32,7 @@ export default function* rootSaga() {
     updateUserWatcher(),
     createMessageWatcher(),
     fetchAllMessageWatcher(),
+    fetchCurrentDialogWatcher(),
     fetchAllDialogsWatcher(),
     saveDialogWatcher(),
     searchDataWatcher(),

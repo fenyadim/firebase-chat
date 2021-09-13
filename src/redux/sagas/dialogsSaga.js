@@ -11,6 +11,8 @@ import {
   FETCH_ALL_DIALOGS_SUCCESS,
   FETCH_ALL_MESSAGE,
   FETCH_ALL_MESSAGE_SUCCESS,
+  FETCH_CURRENT_DIALOG,
+  FETCH_CURRENT_DIALOG_SUCCESS,
   SAVE_DIALOG,
   SEARCH_DATA,
   SEARCH_DATA_SUCCESS,
@@ -56,6 +58,16 @@ function* createMessage(action) {
   }
 }
 
+function* fetchCurrentDialog(action) {
+  try {
+    const {payload} = action
+    const dialog = yield call(rsf.database.read, `dialogs/${payload}`)
+    yield put(FETCH_CURRENT_DIALOG_SUCCESS(dialog))
+  } catch (e) {
+    yield put(DIALOGS_FAILED(e))
+  }
+}
+
 function* fetchAllMessage(action) {
   try {
     const {payload} = action
@@ -71,7 +83,7 @@ function* fetchAllMessage(action) {
     yield take(FETCH_ALL_MESSAGE)
     yield cancel(syncData)
   } catch (e) {
-    console.log(e)
+    yield put(DIALOGS_FAILED(e))
   }
 }
 
@@ -164,6 +176,10 @@ function* searchData(action) {
 // Watchers
 export function* createMessageWatcher() {
   yield takeLatest(CREATE_MESSAGE.type, createMessage)
+}
+
+export function* fetchCurrentDialogWatcher() {
+  yield takeLatest(FETCH_CURRENT_DIALOG.type, fetchCurrentDialog)
 }
 
 export function* fetchAllMessageWatcher() {

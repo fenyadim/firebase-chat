@@ -27,37 +27,8 @@ const schema = Yup.object().shape({
     })
 })
 
-const initialState = {
-  displayName: false,
-  password: false,
-  confirmPassword: false
-}
-
-const reducerState = (state, action) => {
-  switch (action.type) {
-    case 'invalid_displayName':
-      return {
-        ...state,
-        displayName: action.payload
-      };
-    case 'invalid_password':
-      return {
-        ...state,
-        password: action.payload
-      };
-    case 'invalid_confirmPassword':
-      return {
-        ...state,
-        confirmPassword: action.payload
-      }
-    default:
-      throw new Error()
-  }
-}
-
 const DialogsLayout = ({children}) => {
   const [isOpen, setIsOpen] = React.useState(false)
-  const [invalid, dispatchState] = React.useReducer(reducerState, initialState)
   const {data} = useSelector(state => state.users)
   const {email} = data
   const dispatch = useDispatch()
@@ -101,51 +72,41 @@ const DialogsLayout = ({children}) => {
     },
   };
 
-  React.useEffect(() => {
-    const validityCheck = (elem, type) => {
-      if (elem) {
-        dispatchState({type, payload: true})
-      } else {
-        dispatchState({type, payload: false})
-      }
-    }
-    validityCheck(formik.errors.displayName, 'invalid_displayName')
-    validityCheck(formik.errors.password, 'invalid_password')
-    validityCheck(formik.errors.confirmPassword, 'invalid_confirmPassword')
-  }, [formik.touched && formik.errors])
-
   return (
     <Container>
       <Modal
         isOpen={isOpen}
         onRequestClose={closeModal}
         style={customStyles}
-        contentLabel='Example Modal'
+        contentLabel='Обновить профиль'
       >
-        <h1>Обновить профиль</h1>
+        <h1 className='mb-3'>Обновить профиль</h1>
         <Form onSubmit={formik.handleSubmit}>
-          <FormGroup>
+          <FormGroup className="mb-2">
             <Label for='displayName'>Имя:</Label>
             <Input id='displayName' type='text' name='displayName' onChange={formik.handleChange}
-                   value={formik.values.displayName} invalid={invalid.displayName}/>
+                   value={formik.values.displayName}
+                   invalid={formik.touched.displayName && formik.errors.displayName !== undefined}/>
             {formik.touched.displayName && formik.errors.displayName &&
             <FormFeedback>{formik.errors.displayName}</FormFeedback>}
           </FormGroup>
-          <FormGroup>
+          <FormGroup className="mb-2">
             <Label for='password'>Пароль:</Label>
             <Input id='password' type='password' name='password' onChange={formik.handleChange}
-                   value={formik.values.password} invalid={invalid.password}/>
+                   value={formik.values.password}
+                   invalid={formik.touched.password && formik.errors.password !== undefined}/>
             {formik.touched.password && formik.errors.password &&
             <FormFeedback>{formik.errors.password}</FormFeedback>}
           </FormGroup>
-          <FormGroup>
+          <FormGroup className="mb-2">
             <Label for='confirmPassword'>Подтверждение пароля:</Label>
             <Input id='confirmPassword' type='password' name='confirmPassword' onChange={formik.handleChange}
-                   value={formik.values.confirmPassword} invalid={invalid.confirmPassword}/>
+                   value={formik.values.confirmPassword}
+                   invalid={formik.touched.confirmPassword && formik.errors.confirmPassword !== undefined}/>
             {formik.touched.confirmPassword && formik.errors.confirmPassword &&
             <FormFeedback>{formik.errors.confirmPassword}</FormFeedback>}
           </FormGroup>
-          <Button type='submit'>Сохранить</Button>
+          <Button className='mt-2' type='submit'>Сохранить</Button>
         </Form>
       </Modal>
       <Row className='vh-100'>
