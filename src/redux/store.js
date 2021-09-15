@@ -2,7 +2,6 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import createSagaMiddleware from 'redux-saga'
 import storage from 'redux-persist/lib/storage'
 import { persistReducer } from "redux-persist";
-import LogRocket from "logrocket";
 
 import usersReducer from './slices/dataSlice'
 import dialogsReducer from "./slices/dialogsSlice";
@@ -28,7 +27,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 export const store = configureStore({
   reducer: persistedReducer,
-  middleware: [sagaMiddleware, LogRocket.reduxMiddleware()]
+  middleware: [sagaMiddleware]
 })
 
 sagaMiddleware.run(rootSaga)
