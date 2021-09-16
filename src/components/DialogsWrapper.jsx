@@ -15,7 +15,7 @@ const DialogsWrapper = ({name, status, type}) => {
 
   React.useEffect(() => {
     dispatch(FETCH_ALL_DIALOGS(status))
-  }, [dispatch])
+  }, [dispatch, status])
 
   return (
     <DialogsLayout>

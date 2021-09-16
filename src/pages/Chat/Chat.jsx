@@ -25,7 +25,7 @@ const Chat = () => {
   React.useEffect(() => {
     dispatch(FETCH_ALL_MESSAGE(ref))
     dispatch(FETCH_CURRENT_DIALOG(ref))
-  }, [dispatch])
+  }, [dispatch, ref])
 
   return (
     <PubNubProvider client={pubnub}>

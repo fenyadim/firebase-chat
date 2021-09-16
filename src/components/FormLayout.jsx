@@ -57,9 +57,9 @@ const schema = Yup.object().shape({
       'Пароли несовпадают',
       function (values) {
         const response = {}
-        values.map((item) => {
+        values.map((item) => (
           response[item.nameInput] = item[item.nameInput]
-        })
+        ))
         if (response.confirmPassword !== undefined) {
           return response.password === response.confirmPassword;
         }

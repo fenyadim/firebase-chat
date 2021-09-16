@@ -30,7 +30,7 @@ const schema = Yup.object().shape({
 const DialogsLayout = ({children}) => {
   const [isOpen, setIsOpen] = React.useState(false)
   const {data} = useSelector(state => state.users)
-  const {email} = data
+  const {email, displayName} = data
   const dispatch = useDispatch()
   const formik = useFormik({
     initialValues: {
@@ -40,7 +40,7 @@ const DialogsLayout = ({children}) => {
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      dispatch(UPDATE_USER({displayName: values.name, email, password: values.password}))
+      dispatch(UPDATE_USER({displayName: values.displayName, email, password: values.password}))
     }
   })
 
@@ -112,21 +112,21 @@ const DialogsLayout = ({children}) => {
       <Row className='vh-100'>
         <Col className='col-3 d-flex flex-column'>
           <Link to='/active-dialogs'>
-            <a>Активные</a>
+            Активные
           </Link>
           <Link to='/queue-dialogs'>
-            <a>В очереди</a>
+            В очереди
           </Link>
           <Link to='/completed-dialogs'>
-            <a>Завершенные</a>
+            Завершенные
           </Link>
           <Link to='/saved-dialogs'>
-            <a>Сохраненные</a>
+            Сохраненные
           </Link>
         </Col>
         <Col>
           <div className='d-flex justify-content-end'>
-            <h3 className='me-3'>{email}</h3>
+            <h3 className='me-3'>{email} {displayName}</h3>
             <button onClick={openModal}>Редактировать профиль</button>
             <button onClick={() => dispatch(SIGN_OUT())}>Выход</button>
           </div>

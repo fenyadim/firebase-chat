@@ -63,9 +63,6 @@ function* signInGoogleWorker() {
 function* forgotWorker(action) {
   try {
     const {email} = action.payload
-    const actionCodeSettings = {
-      url: 'http://localhost:3000/update-password?email=' + email
-    }
     const auth = firebase.auth()
     yield call([auth, auth.sendPasswordResetEmail], email)
     yield put(FORGOT_SUCCESS('Вам на почту придет письмо с указаниями для сброса пароля'))

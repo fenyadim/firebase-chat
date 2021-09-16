@@ -5,12 +5,14 @@ import Picker from "emoji-picker-react";
 import { useFormik } from "formik";
 import { usePubNub } from "pubnub-react";
 import { useDispatch, useSelector } from "react-redux";
+
 import { DialogsLayout, Loader } from "./index";
 import { CREATE_MESSAGE } from "../redux/slices/dialogsSlice";
 
 const ChatWrapper = ({isLoading, messages, status, idRef}) => {
   const {data: user} = useSelector(state => state.users)
   const [isTyping, setIsTyping] = React.useState(false)
+  const [typingName, setTypingName] = React.useState('')
   const pubnub = usePubNub()
   const [toggleEmojiMenu, setToggleEmojiMenu] = React.useState(false)
   const dispatch = useDispatch()
@@ -34,45 +36,45 @@ const ChatWrapper = ({isLoading, messages, status, idRef}) => {
 
   React.useEffect(() => {
     const input = document.querySelector('#message')
-    const typingChannel = 'is-typing'
-    pubnub.subscribe({channels: [typingChannel]})
+    const typingChannel = 'is.typing'
+    const uuidUser = pubnub.getUUID()
+
+    const signal = (type) => {
+      return {
+        message: {
+          type,
+          name: user?.displayName,
+        },
+        meta: {
+          uuid: uuidUser
+        },
+        channel: typingChannel
+      }
+    }
     const handleChange = () => {
       if (input.value.length === 0) {
-        pubnub.signal({
-          message: {
-            type: 'typing_off',
-            id: user.displayName
-          },
-          channel: typingChannel
-        })
+        pubnub.publish(signal('typing_off'))
       } else {
-        pubnub.signal({
-          message: {
-            type: 'typing_on',
-            id: user.displayName
-          },
-          channel: typingChannel
-        })
+        pubnub.publish(signal('typing_on'))
       }
     }
     const fetchSignal = {
-      signal: function (s) {
-        if (s.message.type === 'typing_on') {
-          setIsTyping(true)
-        } else {
-          setIsTyping(false)
+      message: function (m) {
+        if (m.message.type === 'typing_on') {
+          console.log(m.message.name)
+        } else if (m.message.type === 'typing_off') {
+
         }
       }
     }
     input?.addEventListener('keyup', handleChange)
     pubnub.addListener(fetchSignal)
+    pubnub.subscribe({channels: [typingChannel]})
     return () => {
       input?.removeEventListener('keyup', handleChange)
       pubnub.removeListener(fetchSignal)
     }
-  }, [pubnub])
-
-  console.log(isTyping)
+  }, [pubnub, user?.displayName])
 
   return (
     <DialogsLayout>
@@ -85,7 +87,7 @@ const ChatWrapper = ({isLoading, messages, status, idRef}) => {
                     style={{fontSize: 11}}>{moment(item.timestamp, 'D MMM YY, HH:mm').fromNow()}</span>
             </div>
           )) : <p>Сообщений нет</p>) : <Loader/>}
-          {isTyping ? <p>{user.displayName} печатает...</p> : ''}
+          {typingName ? <p>{typingName} печатает...</p> : ''}
         </div>
         <Row>
           {status && status !== 'completed' ?
