@@ -5,4 +5,4 @@ export { default as FormLayout } from './FormLayout'
 export { default as Loader } from './Loader'
 export { default as ChatCard } from './ChatCard'
 export { default as ChatWrapper } from './ChatWrapper'
-
+export { default as EdittigModal } from './EdittigModal'

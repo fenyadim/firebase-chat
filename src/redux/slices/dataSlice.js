@@ -10,9 +10,9 @@ const initialState = {
 }
 
 const reducerSuccess = (state, payload, response) => {
-  const {uid, email, displayName} = payload
+  const {uid, email, displayName, photoURL} = payload
   state.status = 'success'
-  state.data = {uid, email, displayName}
+  state.data = {uid, email, displayName, photoURL}
   state.response = response
   state.isAuthorized = true
   state.isLoading = false

@@ -11,7 +11,6 @@ import { CREATE_MESSAGE } from "../redux/slices/dialogsSlice";
 
 const ChatWrapper = ({isLoading, messages, status, idRef}) => {
   const {data: user} = useSelector(state => state.users)
-  const [isTyping, setIsTyping] = React.useState(false)
   const [typingName, setTypingName] = React.useState('')
   const pubnub = usePubNub()
   const [toggleEmojiMenu, setToggleEmojiMenu] = React.useState(false)
@@ -45,9 +44,6 @@ const ChatWrapper = ({isLoading, messages, status, idRef}) => {
           type,
           name: user?.displayName,
         },
-        meta: {
-          uuid: uuidUser
-        },
         channel: typingChannel
       }
     }
@@ -60,10 +56,12 @@ const ChatWrapper = ({isLoading, messages, status, idRef}) => {
     }
     const fetchSignal = {
       message: function (m) {
-        if (m.message.type === 'typing_on') {
-          console.log(m.message.name)
-        } else if (m.message.type === 'typing_off') {
-
+        if (m.publisher !== uuidUser) {
+          if (m.message.type === 'typing_on') {
+            setTypingName(m.message.name)
+          } else if (m.message.type === 'typing_off') {
+            setTypingName('')
+          }
         }
       }
     }

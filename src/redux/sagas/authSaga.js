@@ -28,8 +28,8 @@ export const onAuthStateChanged = () => {
   return new Promise((resolve, reject) => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        const {uid, email, displayName} = user
-        resolve({uid, email, displayName})
+        const {uid, email, displayName, photoURL} = user
+        resolve({uid, email, displayName, photoURL})
       } else {
         reject({message: 'Нет авторизированного пользователя!'})
       }
@@ -116,11 +116,15 @@ function* updatePasswordWorker(action) {
 
 function* updateUser(action) {
   try {
-    const {displayName, email, password} = action.payload
+    const {displayName, email, password, imageUrl, uid} = action.payload
+    const task = rsf.storage.uploadFile(`users/${uid}/profile.jpg`, imageUrl)
     yield call(rsf.auth.signInWithEmailAndPassword, email, password)
     yield call(rsf.auth.updateProfile, {
       displayName
     })
+    if (imageUrl) {
+      yield task
+    }
     yield put(UPDATE_USER_SUCCESS(displayName))
   } catch (e) {
     yield put(AUTHENTICATION_FAILED('Не удалось обновить профиль. Неправильный пароль'))
