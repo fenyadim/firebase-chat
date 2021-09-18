@@ -108,11 +108,11 @@ function* fetchAllDialogs(action) {
     }
     yield call(lastTimeMessage)
     const {uid} = yield call(onAuthStateChanged)
-    // const child = status === 'queue' ? 'status' : 'operatorId_status'
-    // const equalItem = status === 'queue' ? status : `${uid}_${status}`
+    const child = status === 'queue' ? 'status' : 'operatorId_status'
+    const equalItem = status === 'queue' ? status : `${uid}_${status}`
     const syncData = yield fork(
       rsf.database.sync,
-      firebase.database().ref('dialogs').orderByChild('status').equalTo('active'),
+      firebase.database().ref('dialogs').orderByChild(child).equalTo(equalItem),
       {
         successActionCreator: FETCH_ALL_DIALOGS_SUCCESS,
         transform: value => dialogTransformData(value),

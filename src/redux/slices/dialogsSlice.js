@@ -18,6 +18,7 @@ export const FETCH_CURRENT_DIALOG = createAction('dialogs/FETCH_CURRENT_DIALOG')
 
 const reducerRequestDialog = (state) => {
   state.isLoading = true
+  state.dialogs = []
 }
 
 const reducerRequestMessage = (state) => {

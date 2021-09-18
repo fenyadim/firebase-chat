@@ -1,5 +1,6 @@
 import firebase from 'firebase/app'
 import 'firebase/auth'
+import 'firebase/storage'
 
 import { call, put, takeLatest } from 'redux-saga/effects'
 
@@ -117,17 +118,25 @@ function* updatePasswordWorker(action) {
 function* updateUser(action) {
   try {
     const {displayName, email, password, imageUrl, uid} = action.payload
-    const task = rsf.storage.uploadFile(`users/${uid}/profile.jpg`, imageUrl)
     yield call(rsf.auth.signInWithEmailAndPassword, email, password)
-    yield call(rsf.auth.updateProfile, {
-      displayName
-    })
     if (imageUrl) {
-      yield task
+      const ref = `users/${uid}/profile`
+      yield call(rsf.storage.uploadFile, ref, imageUrl)
+      const url = yield call(rsf.storage.getDownloadURL, ref)
+      yield call(rsf.auth.updateProfile, {
+        displayName,
+        photoURL: url
+      })
+      yield put(UPDATE_USER_SUCCESS({displayName, url}))
+    } else {
+      yield call(rsf.auth.updateProfile, {
+        displayName,
+      })
+      yield put(UPDATE_USER_SUCCESS(displayName))
     }
-    yield put(UPDATE_USER_SUCCESS(displayName))
   } catch (e) {
     yield put(AUTHENTICATION_FAILED('Не удалось обновить профиль. Неправильный пароль'))
+    console.log(e.message)
   }
 }
 

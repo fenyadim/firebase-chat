@@ -45,13 +45,23 @@ const GroupInput = ({input, meta, nameInput}) => {
 
 const EdditingModal = ({isOpen, closeModal, user}) => {
   const {displayName: name, email, photoURL, uid} = user
-  console.log(user)
+  const [uploadUrlImage, setUploadUrlImage] = React.useState(photoURL)
   const dispatch = useDispatch()
   let formData = {
     imageUrl: '',
     displayName: name && name,
     password: '',
     confirmPassword: ''
+  }
+
+  const handleChange = (target, onChange) => {
+    const files = target.files[0]
+    const reader = new FileReader()
+    reader.onloadend = function (e) {
+      setUploadUrlImage(e.target.result)
+    }
+    reader.readAsDataURL(files)
+    onChange(target.files)
   }
 
   return (
@@ -63,15 +73,13 @@ const EdditingModal = ({isOpen, closeModal, user}) => {
     >
       <Form
         onSubmit={(values) => {
-          const formData = new FormData()
-          formData.append('file', values.imageUrl)
-          console.log(values)
+          const imageUrl = values.imageUrl[0]
           dispatch(UPDATE_USER({
             displayName: values.displayName,
             email,
             password: values.password,
             uid,
-            imageUrl: values.imageUrl
+            imageUrl
           }))
         }}
         validate={(values) => {
@@ -99,14 +107,13 @@ const EdditingModal = ({isOpen, closeModal, user}) => {
               name='imageUrl'
               type='file'
             >
-              {({input, meta}) => (
+              {({input: {value, onChange, ...input}, meta}) => (
                 <FormGroup className="mb-3">
                   <Label className='d-block ms-2'>Аватар:</Label>
-                  <img className='rounded-circle me-3 mt-3' src={!values.imageUrl ? photoURL : values.imageUrl}
+                  <img className='rounded-circle me-3 mt-3 center-cropped'
+                       src={uploadUrlImage}
                        alt="Аватар"/>
-                  <Input {...input} onChange={(e) => {
-                    values.imageUrl = e.target.files[0].name
-                  }}/>
+                  <Input {...input} onChange={({target}) => handleChange(target, onChange)}/>
                   {meta.touched && meta.error && <FormFeedback>{meta.error}</FormFeedback>}
                 </FormGroup>
               )}

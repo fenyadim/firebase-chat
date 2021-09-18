@@ -6,7 +6,7 @@ import debounce from "lodash.debounce";
 
 import { SIGN_OUT } from "../redux/slices/dataSlice";
 import { SEARCH_DATA } from "../redux/slices/dialogsSlice";
-import EdditingModal from "./EdittigModal";
+import { EdittigModal } from "./index";
 
 //TODO: Поправить здесь!!!
 
@@ -34,7 +34,7 @@ const DialogsLayout = ({children}) => {
 
   return (
     <Container>
-      <EdditingModal isOpen={isOpen} closeModal={closeModal} user={user}/>
+      <EdittigModal isOpen={isOpen} closeModal={closeModal} user={user}/>
       <Row className='vh-100'>
         <Col className='col-3 d-flex flex-column'>
           <Link to='/active-dialogs'>

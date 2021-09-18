@@ -58,9 +58,11 @@ const usersSlice = createSlice({
     },
     UPDATE_USER: reducerRequest,
     UPDATE_USER_SUCCESS: (state, {payload}) => {
+      const {displayName, url: photoURL} = payload
       state.data = {
         ...state.data,
-        displayName: payload
+        displayName,
+        photoURL
       }
       state.isLoading = false
       toast.success('Профиль успешно обновлен!')

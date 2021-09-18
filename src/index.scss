@@ -25,6 +25,13 @@ h1, h2, h3, h4, h5, li , p {
   height: 75vh !important;
 }
 
+.center-cropped {
+  width: 75px;
+  height: 75px;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
 //input {
 //  height: 25px;
 //}
