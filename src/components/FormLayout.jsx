@@ -69,7 +69,9 @@ const schema = Yup.object().shape({
 })
 
 const FromLayout = ({children, dispatchType, name, inputs, nameSubmitBtn, additionalParam}) => {
-  const {status, response} = useSelector(state => state.users)
+  const users = useSelector(state => state.users)
+  const status = users?.status
+  const response = users?.response
   const dispatch = useDispatch()
 
   const dispatchPayload = (email, password, additional, displayName) => {

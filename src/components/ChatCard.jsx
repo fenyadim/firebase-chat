@@ -10,7 +10,7 @@ const ChatCard = ({topic, dialogId, isSaved, lastTime, status}) => {
   const diffTime = moment(lastTime, 'D MMM YY, HH:mm').fromNow()
 
   return (
-    <div className='border-dark border p-3 mb-2'>
+    <div className='rounded border p-3 mb-2'>
       <h3>{topic}</h3>
       <span>{lastTime ? diffTime : 'Новый'}</span>
       <Link to={`/chat?id=${dialogId}`}>

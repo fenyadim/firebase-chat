@@ -6,9 +6,10 @@ import {
   signInWatcher,
   signOutWatcher,
   signUpWatcher,
+  updateDialogSettingsWatcher,
   updatePasswordWatcher,
   updateUserWatcher,
-} from "./authSaga";
+} from "./usersSaga";
 
 import {
   createMessageWatcher,
@@ -36,6 +37,7 @@ export default function* rootSaga() {
     fetchAllDialogsWatcher(),
     saveDialogWatcher(),
     searchDataWatcher(),
-    switchStatusDialogWatcher()
+    switchStatusDialogWatcher(),
+    updateDialogSettingsWatcher()
   ])
 }

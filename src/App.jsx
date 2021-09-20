@@ -2,12 +2,14 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
 
-import { FETCH_AUTHORIZED_USER } from "./redux/slices/dataSlice";
+import { FETCH_AUTHORIZED_USER } from "./redux/slices/usersSlice";
 import { Layout, Loader } from "./components";
 import { privateRoutes, publicRoutes } from "./routes";
 
 function App() {
-  const {isAuthorized, isLoading} = useSelector((state) => state.users)
+  const users = useSelector((state) => state.users)
+  const isAuthorized = users?.isAuthorized
+  const isLoading = users?.isLoading
   const dispatch = useDispatch()
 
   React.useEffect(() => {

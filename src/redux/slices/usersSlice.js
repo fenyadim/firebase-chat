@@ -1,17 +1,26 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAction, createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 
 const initialState = {
   data: {},
+  settings: {
+    phrases: [],
+    themes: [],
+    subtopics: [],
+    autoGreetings: ''
+  },
   status: null,
   response: null,
   isAuthorized: false,
   isLoading: true
 }
 
+export const UPDATE_DIALOGS_SETTINGS = createAction('users/UPDATE_DIALOGS_SETTINGS')
+
 const reducerSuccess = (state, payload, response) => {
-  const {uid, email, displayName, photoURL} = payload
+  const {uid, email, displayName, photoURL, settings} = payload
   state.status = 'success'
+  state.settings = settings
   state.data = {uid, email, displayName, photoURL}
   state.response = response
   state.isAuthorized = true
@@ -67,6 +76,13 @@ const usersSlice = createSlice({
       state.isLoading = false
       toast.success('Профиль успешно обновлен!')
     },
+    UPDATE_DIALOGS_SETTINGS_SUCCESS: (state, {payload}) => {
+      const {phrases, themes, subtopics, autoGreetings} = payload
+      state.settings.phrases = phrases
+      state.settings.themes = themes
+      state.settings.subtopics = subtopics
+      state.settings.autoGreetings = autoGreetings
+    },
     FETCH_AUTHORIZED_USER: reducerRequest,
     FETCH_AUTHORIZED_USER_SUCCESS: (state, {payload}) => {
       reducerSuccess(state, payload)
@@ -93,6 +109,7 @@ export const {
   UPDATE_PASSWORD_SUCCESS,
   UPDATE_USER,
   UPDATE_USER_SUCCESS,
+  UPDATE_DIALOGS_SETTINGS_SUCCESS,
   FETCH_AUTHORIZED_USER_SUCCESS,
   AUTHENTICATION_FAILED,
   SIGN_OUT,

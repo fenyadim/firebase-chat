@@ -3,7 +3,7 @@ import { DialogsWrapper } from "../../components";
 
 const ActiveDialogs = () => {
   return (
-    <DialogsWrapper name='ActiveChat'/>
+    <DialogsWrapper name='Активные'/>
   );
 };
 

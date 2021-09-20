@@ -1,20 +1,41 @@
 import React from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { Col, Container, Input, Row } from "reactstrap";
+import { Col, Container, Input, Nav, NavItem, NavLink, Row, TabContent, TabPane } from "reactstrap";
 import { Link } from "react-router-dom";
+import Modal from "react-modal";
 import debounce from "lodash.debounce";
 
-import { SIGN_OUT } from "../redux/slices/dataSlice";
+import { SIGN_OUT } from "../redux/slices/usersSlice";
 import { SEARCH_DATA } from "../redux/slices/dialogsSlice";
-import { EdittigModal } from "./index";
+import { DialogsSettings, EditProfile } from "./index";
 
 //TODO: Поправить здесь!!!
 
+const modalStyle = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    width: '650px',
+    maxHeight: '640px',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+  },
+};
+
 const DialogsLayout = ({children}) => {
   const [isOpen, setIsOpen] = React.useState(false)
+  const [activeTab, setActiveTab] = React.useState('1')
   const {data: user} = useSelector(state => state.users)
-  const {email, displayName, photoURL} = user
+  const {email, displayName} = user
   const dispatch = useDispatch()
+
+  const toggleTabs = (tab) => {
+    if (activeTab !== tab) {
+      setActiveTab(tab)
+    }
+  }
 
   const changeHandler = (e) => {
     dispatch(SEARCH_DATA(e.target.value))
@@ -34,7 +55,40 @@ const DialogsLayout = ({children}) => {
 
   return (
     <Container>
-      <EdittigModal isOpen={isOpen} closeModal={closeModal} user={user}/>
+      <Modal
+        isOpen={isOpen}
+        onRequestClose={closeModal}
+        style={modalStyle}
+        contentLabel='Обновить профиль'
+      >
+        <h2 className='mb-4'>Редактирование профиля</h2>
+        <Nav tabs>
+          <NavItem>
+            <NavLink className={`cursor-pointer ${activeTab === '1' ? 'active' : ''}`}
+                     onClick={() => {
+                       toggleTabs('1')
+                     }}>
+              Обновление профиля
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink className={`cursor-pointer ${activeTab === '2' ? 'active' : ''}`}
+                     onClick={() => {
+                       toggleTabs('2')
+                     }}>
+              Настройки диалогов
+            </NavLink>
+          </NavItem>
+        </Nav>
+        <TabContent activeTab={activeTab}>
+          <TabPane tabId='1'>
+            <EditProfile user={user}/>
+          </TabPane>
+          <TabPane tabId='2' className='overflow-auto'>
+            <DialogsSettings/>
+          </TabPane>
+        </TabContent>
+      </Modal>
       <Row className='vh-100'>
         <Col className='col-3 d-flex flex-column'>
           <Link to='/active-dialogs'>

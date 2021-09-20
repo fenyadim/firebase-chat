@@ -18,11 +18,13 @@ import {
   SIGN_OUT_SUCCESS,
   SIGN_UP,
   SIGN_UP_SUCCESS,
+  UPDATE_DIALOGS_SETTINGS,
+  UPDATE_DIALOGS_SETTINGS_SUCCESS,
   UPDATE_PASSWORD,
   UPDATE_PASSWORD_SUCCESS,
   UPDATE_USER,
   UPDATE_USER_SUCCESS
-} from "../slices/dataSlice";
+} from "../slices/usersSlice";
 import { rsf } from "../../index";
 
 export const onAuthStateChanged = () => {
@@ -55,7 +57,8 @@ function* signInGoogleWorker() {
   try {
     const auth = firebase.auth()
     const {user} = yield call([auth, auth.signInWithPopup], provider)
-    yield put(SIGN_IN_GOOGLE_SUCCESS(user))
+    const settings = yield call(rsf.database.read, `settings/${user.uid}`)
+    yield put(SIGN_IN_GOOGLE_SUCCESS({...user, settings}))
   } catch (e) {
     yield put(AUTHENTICATION_FAILED(e.message))
   }
@@ -77,7 +80,8 @@ function* signInWorker(action) {
   try {
     const auth = firebase.auth()
     const {user} = yield call([auth, auth.signInWithEmailAndPassword], email, password)
-    yield put(SIGN_IN_SUCCESS(user))
+    const settings = yield call(rsf.database.read, `settings/${user.uid}`)
+    yield put(SIGN_IN_SUCCESS({...user, settings}))
   } catch (e) {
     yield put(AUTHENTICATION_FAILED(e.message))
   }
@@ -86,7 +90,8 @@ function* signInWorker(action) {
 function* loggedWorker() {
   try {
     const response = yield call(onAuthStateChanged)
-    yield put(FETCH_AUTHORIZED_USER_SUCCESS(response))
+    const settings = yield call(rsf.database.read, `settings/${response.uid}`)
+    yield put(FETCH_AUTHORIZED_USER_SUCCESS({...response, settings}))
   } catch (e) {
     yield put(SIGN_OUT_SUCCESS())
   }
@@ -140,6 +145,21 @@ function* updateUser(action) {
   }
 }
 
+function* updateDialogSettings(action) {
+  try {
+    const {uid, phrases, themes, subtopics, autoGreetings} = action.payload
+    console.log(action.payload)
+    yield call(rsf.database.update, `settings/${uid}`, {
+      phrases,
+      themes,
+      subtopics,
+      autoGreetings
+    })
+    yield put(UPDATE_DIALOGS_SETTINGS_SUCCESS({phrases, themes, subtopics, autoGreetings}))
+  } catch (e) {
+    console.log(e)
+  }
+}
 
 // Watchers
 export function* signUpWatcher() {
@@ -172,4 +192,8 @@ export function* updatePasswordWatcher() {
 
 export function* updateUserWatcher() {
   yield takeLatest(UPDATE_USER.type, updateUser)
+}
+
+export function* updateDialogSettingsWatcher() {
+  yield takeLatest(UPDATE_DIALOGS_SETTINGS.type, updateDialogSettings)
 }

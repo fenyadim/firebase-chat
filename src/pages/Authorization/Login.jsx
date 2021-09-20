@@ -5,7 +5,7 @@ import { Button, FormGroup } from "reactstrap";
 
 import { FormLayout } from "../../components";
 
-import { SIGN_IN, SIGN_IN_GOOGLE } from "../../redux/slices/dataSlice";
+import { SIGN_IN, SIGN_IN_GOOGLE } from "../../redux/slices/usersSlice";
 
 const Login = () => {
   const dispatch = useDispatch()

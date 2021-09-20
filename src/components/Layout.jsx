@@ -4,7 +4,8 @@ import { useSelector } from "react-redux";
 import { Container } from "reactstrap";
 
 const Layout = ({children}) => {
-  const {status} = useSelector(state => state.users)
+  const users = useSelector(state => state.users)
+  const status = users?.status
 
   return (
     <>

@@ -19,7 +19,7 @@ import {
   SWITCH_STATUS
 } from "../slices/dialogsSlice";
 import { rsf } from "../../index";
-import { onAuthStateChanged } from "./authSaga";
+import { onAuthStateChanged } from "./usersSaga";
 
 const messageTransformData = ({value}) => {
   const response = []

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import { Button, FormGroup } from "reactstrap";
 
-import { UPDATE_PASSWORD } from "../../redux/slices/dataSlice";
+import { UPDATE_PASSWORD } from "../../redux/slices/usersSlice";
 import { FormLayout } from "../../components";
 import { useQuery } from "../../hooks";
 

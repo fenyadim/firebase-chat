@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from "react-router-dom";
 
 import { FormLayout } from "../../components";
-import { FORGOT } from "../../redux/slices/dataSlice";
+import { FORGOT } from "../../redux/slices/usersSlice";
 import { Button, FormGroup } from "reactstrap";
 
 const ForgotPassword = () => {

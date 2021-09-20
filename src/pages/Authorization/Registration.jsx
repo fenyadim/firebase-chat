@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Button, FormGroup } from "reactstrap";
 
 import { FormLayout } from "../../components";
-import { SIGN_UP } from "../../redux/slices/dataSlice";
+import { SIGN_UP } from "../../redux/slices/usersSlice";
 
 const Registration = () => {
   return (
